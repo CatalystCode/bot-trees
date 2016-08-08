@@ -2,10 +2,9 @@ var express = require('express');
 var builder = require('botbuilder');
 var app = express();
 
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
+var config = require('./config');
+
+var connector = new builder.ChatConnector(config.bot);
 var bot = new builder.UniversalBot(connector);
 
 var port = process.env.PORT || 3978;
