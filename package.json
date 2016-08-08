@@ -1,0 +1,23 @@
+{
+  "name": "bot-trees",
+  "version": "1.0.0",
+  "description": "bot tree generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CatalystCode/bot-trees.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CatalystCode/bot-trees/issues"
+  },
+  "homepage": "https://github.com/CatalystCode/bot-trees#readme",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "express": "^4.14.0"
+  }
+}
