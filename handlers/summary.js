@@ -1,6 +1,6 @@
 
 module.exports = function (session, next) {
-  var summary = "";
+  var summary = "Summary: ";
   for (var prop in session.dialogData) {
     summary += prop + ': [' + session.dialogData[prop] + ']; '; 
   }

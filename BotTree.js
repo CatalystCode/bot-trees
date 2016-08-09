@@ -1,5 +1,5 @@
 var extend = require('extend');
-
+var path = require('path');
 var builder = require('botbuilder');
 var conditionHandler = require('./conditionHandler');
 
@@ -23,7 +23,8 @@ function BotTree(opts) {
           nodes.forEach(function(nodeItem, index) {
               // In case of subScenario, copy all subScenario to current node
               if (isSubScenario(nodeItem)) {
-                  var subScenario = tree.subScenarios[nodeItem.subScenario];
+                  var subScenarioPath = path.join(__dirname, 'scenarios', nodeItem.subScenario + '.json');
+                  var subScenario = require(subScenarioPath); //tree.subScenarios[nodeItem.subScenario];
                   extend(true, nodeItem, subScenario);
               }
 
@@ -105,9 +106,9 @@ BotTree.prototype.getSteps = function() {
     
     switch (currentNode.type) {
 
-    case 'text':
-      session.send(currentNode.data.text);
-      return next();
+      case 'text':
+        session.send(currentNode.data.text);
+        return next();
 
       case 'prompt':
         var promptType = currentNode.data.type || 'text';
