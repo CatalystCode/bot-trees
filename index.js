@@ -48,18 +48,8 @@ intents.matches(/^scenario1/i, [
 var tree = require('./sample.scenario.json');
 var BotTree = require('./BotTree');
 
-var botTree = new BotTree({tree});
-
-function stepHandler(session, args, a, b) {
-  console.log('stepHandler: ');
-  
-}
-var steps = [];
-for (var i=0; i<100; i++) steps.push(stepHandler);
-
-var flatTree = normalizeTree(tree);
-
-intents.matches(/^scenario2/i, steps);
+var botTree = new BotTree({tree, steps: 10});
+intents.matches(/^scenario2/i, botTree.getSteps());
 
 // ============================================
 
