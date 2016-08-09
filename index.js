@@ -1,6 +1,7 @@
 var express = require('express');
 var builder = require('botbuilder');
 var app = express();
+var BotTree = require('./BotTree');
 
 var config = require('./config');
 
@@ -18,27 +19,9 @@ intents.onDefault([
 
 bot.dialog('/', intents);
 
-
-var histeps = [];
-var tree = null;
-var dialogHandler = require('./dialogHandler');
-
 intents.matches(/^(help|hi|hello)/i, [
-  function performAction(session) {
-
-    dialogHandler.performAcion(session, tree, builder);
-
-    session.next();
-  },
-  function collectData(session, results) {
-
-    var currentNode = getCurrentStep(session, tree);
-    dialogHandler.collectResponse(session, tree, builder, results);
-    
-    session.next();
-  },
-  function nextStep(session) {
-    // choose next step...
+  function (session) {
+    session.send('welcome message...');
   }
 ]);
 
@@ -59,14 +42,11 @@ intents.matches(/^scenario1/i, [
 ]);
 
 
-
 // ============================================
 
 var tree = require('./sample.scenario.json');
-var BotTree = require('./BotTree');
-
 var botTree = new BotTree({tree, steps: 10});
-intents.matches(/^scenario2/i, botTree.getSteps());
+intents.matches(/^test/i, botTree.getSteps());
 
 // ============================================
 
