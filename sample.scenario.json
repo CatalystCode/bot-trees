@@ -25,7 +25,7 @@
       "varname": "workout",
       "scenarios": [
         {
-          "condition": "workout = 'Crossfit'",
+          "condition": "workout == 'Crossfit'",
           "steps": [
             {
               "id": "cfWeight",
@@ -89,7 +89,7 @@
           ]
         },
         {
-          "condition": "workout = 'TRX'",
+          "condition": "workout == 'TRX'",
           "steps": [
             {
               "id": "trxStrength",
@@ -103,7 +103,7 @@
           ]
         },
         {
-          "condition": "workout = 'Kung-Fu'",
+          "condition": "workout == 'Kung-Fu'",
           "steps": [
             {
               "id": "kfYears",

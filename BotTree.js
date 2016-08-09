@@ -14,38 +14,37 @@ function BotTree(opts) {
 
     function normalizeTree(tree) {
         var nodeIds = {};
-        var extensions = null;
+        var uniqueNodeId = 1;
         recursive(null, tree);
         self._nodeIds = nodeIds;
 
         function initNodes(parent, nodes) {
-            nodes = nodes || [];
-            nodes.forEach(function(nodeItem, index) {
+          nodes = nodes || [];
+          nodes.forEach(function(nodeItem, index) {
 
-                // In case of extension, copy all extension to current node
-                if (shouldExtend(nodeItem)) {
-                    var extension = tree.extensions[nodeItem.extensionId];
-                    extend(true, nodeItem, extension);
-                }
+            // In case of extension, copy all extension to current node
+            if (shouldExtend(nodeItem)) {
+              var extension = tree.extensions[nodeItem.extensionId];
+              extend(true, nodeItem, extension);
+            }
 
-                if (parent) nodeItem._parent = parent;
-                if (index > 0) nodeItem._prev = nodes[index - 1];
-                if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
-                recursive(parent, nodeItem);
-            }, this); 
+            if (parent) nodeItem._parent = parent;
+            if (index > 0) nodeItem._prev = nodes[index - 1];
+            if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
+            recursive(parent, nodeItem);
+          }, this); 
         }
 
-        var uniqueNodeId = 1;
         function recursive(parent, node) {
-            initNodes(parent, node.steps);
+          initNodes(parent, node.steps);
 
-            var scenarios = node.scenarios || [];
-            scenarios.forEach(function(scenario) {
-                initNodes(node, scenario.steps);
-            }, this);
-            
-            if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
-            nodeIds[node.id] = node;
+          var scenarios = node.scenarios || [];
+          scenarios.forEach(function(scenario) {
+            initNodes(node, scenario.steps);
+          }, this);
+          
+          if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
+          nodeIds[node.id] = node;
         }
 
         function shouldExtend(nodeItem) {
@@ -106,6 +105,11 @@ function performAcion(session, next) {
   var currentNode = getCurrentNode(session);
   
   switch (currentNode.type) {
+
+    case 'text':
+      session.send(currentNode.data.text);
+      return next();
+
     case 'prompt':
       var promptType = currentNode.data.type || 'text';
       builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
