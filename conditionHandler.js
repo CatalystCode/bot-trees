@@ -8,7 +8,7 @@ var jsep = require('jsep');
  * Example 1: if (parseExpression(session, 'days > 7')) {...}
  * Example 2: if (parseExpression(session, 'age - years > 20')) {...}
  */
-function parseExpression(session, expression) {
+function evaluateExpression(session, expression) {
 
   var exp = expression;
   if (typeof exp == 'string') {
@@ -19,11 +19,11 @@ function parseExpression(session, expression) {
     case 'BinaryExpression':
       var value1 = parseExpression(session, exp.left);
       var value2 = parseExpression(session, exp.right);
-      return evaluateExpression(exp.operator, value1, value2);
+      return calculateExpression(exp.operator, value1, value2);
 
     case 'UnaryExpression':
       var value = parseExpression(session, exp.argument);
-      return evaluateExpression(exp.operator, value1);
+      return calculateExpression(exp.operator, value1);
 
     case 'Identifier':
       return session[exp.name];
@@ -36,7 +36,7 @@ function parseExpression(session, expression) {
   }
 }
 
-function evaluateExpression(operator, value1, value2) {
+function calculateExpression(operator, value1, value2) {
   switch (operator) {
 
     case '!':
@@ -89,5 +89,5 @@ function evaluateExpression(operator, value1, value2) {
 }
 
 module.exports = {
-  parseExpression: parseExpression
+  evaluateExpression: evaluateExpression
 };
