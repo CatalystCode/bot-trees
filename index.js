@@ -1,7 +1,8 @@
+var path = require('path');
 var express = require('express');
 var builder = require('botbuilder');
 var app = express();
-var BotTree = require('./BotTree');
+var BotGraphDialog = require('./lib/BotGraphDialog');
 
 var config = require('./config');
 
@@ -44,9 +45,12 @@ intents.matches(/^scenario1/i, [
 
 // ============================================
 
-var tree = require('./scenarios/sample.scenario.json');
-var botTree = new BotTree({tree});
-intents.matches(/^test/i, botTree.getSteps());
+var scenariosPath = path.join(__dirname, 'scenarios');
+var handlersPath = path.join(__dirname, 'handlers');
+
+var tree = require('./scenarios/workout.json');
+var graphDialog = new BotGraphDialog({tree, scenariosPath, handlersPath});
+intents.matches(/^workout/i, graphDialog.getSteps());
 
 // ============================================
 
