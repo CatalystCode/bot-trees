@@ -40,7 +40,7 @@ function getCurrentStep(session, tree) {
   return _node;
 }
 
-function performAcion(session, tree, builder) {
+function performAcion(session, tree, builder, next) {
 
   var currentNode = getCurrentStep(session, tree);
   
@@ -48,10 +48,18 @@ function performAcion(session, tree, builder) {
     case 'prompt':
       var promptType = currentNode.data.type || 'text';
       builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
+      next();
       break;
+
+    case 'handler':
+      var handlerName = currentNode.data.name;
+      var handler = require('./handlers/' + handlerName);
+      return handler(session, next);
   
     default:
-      break;
+      var error = new Error('Node type ' + currentNode.type + ' is not recognized');
+      console.error(error);
+      throw error; 
   }  
 }
 
