@@ -48,9 +48,9 @@ intents.matches(/^scenario1/i, [
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-var tree = require('./scenarios/workout.json');
-var graphDialog = new BotGraphDialog({tree, scenariosPath, handlersPath});
-intents.matches(/^workout/i, graphDialog.getSteps());
+var workoutGraph = require('./scenarios/workout.json');
+var workoutGraphDialog = new BotGraphDialog({tree: workoutGraph, scenariosPath, handlersPath});
+intents.matches(/^workout/i, workoutGraphDialog.getSteps());
 
 // ============================================
 
