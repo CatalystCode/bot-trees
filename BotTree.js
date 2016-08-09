@@ -1,4 +1,5 @@
 
+var builder = require('botbuilder');
 var conditionHandler = require('./conditionHandler');
 
 function BotTree(opts) {
@@ -40,8 +41,6 @@ function BotTree(opts) {
     }
 }
 
-
-
 BotTree.prototype.getSteps = function() {
 	var self = this;
 
@@ -75,71 +74,99 @@ BotTree.prototype.getSteps = function() {
     return next;
   }
 
-  function performAcion(session, tree, builder) {
+function getCurrentNode(session) {
+  return self._nodeIds[session.dialogData._currentNodeId];
+}
+  
+function performAcion(session, next) {
 
-    var currentNode = getCurrentStep(session, tree);
+  var currentNode = getCurrentNode(session);
+  
+  switch (currentNode.type) {
+    case 'prompt':
+      var promptType = currentNode.data.type || 'text';
+      builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
+      return next();
     
-    switch (currentNode.type) {
-      case 'prompt':
-        var promptType = currentNode.data.type || 'text';
-        builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
-        break;
-    
-      default:
-        break;
-    }  
-  }
+    case 'handler':
+      var handlerName = currentNode.data.name;
+      var handler = require('./handlers/' + handlerName);
+      return handler(session, next);
+  
+    default:
+      var error = new Error('Node type ' + currentNode.type + ' is not recognized');
+      console.error(error);
+      //throw error; 
+  }  
+}
 
-  function collectResponse(session, tree, builder, results) {
+  function collectResponse(session, results) {
 
-    var currentNode = getCurrentStep(session, tree);
+    var currentNode = getCurrentNode(session);
     var varname = currentNode.varname || currentNode.id;
-    if (results.response && varname) {
+    
+    if (!(results.response && varname)) return;
 
-      session.dialogData[varname] = results.response;
+    session.dialogData[varname] = results.response;
 
-      if (currentNode.type == 'prompt') {
-        if (currentNode.data.type == 'time') {
-          session.dialogData[varname] = builder.EntityRecognizer.resolveTime([results.response]);
-        }
-        if (currentNode.data.type == 'choice') {
-          session.dialogData[varname] = currentNode.data.options[results.response.entity];
-        }
-        
+    if (currentNode.type === 'prompt') {
+      if (currentNode.data.type === 'time') {
+        session.dialogData[varname] = builder.EntityRecognizer.resolveTime([results.response]);
       }
-      switch (currentNode.varType) {
-        case 'time':
-          break;
-      
-        default:
-          break;
+      if (currentNode.data.type === 'choice') {
+        session.dialogData[varname] = currentNode.data.options[results.response.entity];
       }
     }
   }
 
 
-	function stepHandler(session, args, next) {
-      if (!session.dialogData._currentNodeId) { 
-        session.dialogData._currentNodeId = self.tree.steps[0].id;
-      }
-      var currentNode = self._nodeIds[session.dialogData._currentNodeId];
-      
-      // processing
-      console.log('stepHandler: ', currentNode.id);
-      session.send('_currentNodeId: ' + currentNode.id);
-      // end processing
+  function stepInteractionHandler(session, results, next) {
+    if (!session.dialogData._currentNodeId) { 
+      session.dialogData._currentNodeId = self.tree.steps[0].id;
+    }
+    var currentNode = self._nodeIds[session.dialogData._currentNodeId];
+    
+    // processing
+    console.log('stepHandler: ', currentNode.id);
+    session.send('_currentNodeId: ' + currentNode.id);
 
-      var nextNode = getNextNode(session);
-      if (nextNode) 
-        session.dialogData._currentNodeId = nextNode.id;
-      else
-        return session.endDialog();
+    performAcion(session, next);
+  }
 
-			return next();
-	}
+  function stepResultCollectionHandler(session, results, next) {
+    collectResponse(session, results);
+    return next();
+  }
+
+  function setNextStepHandler(session, args, next) {
+
+    var nextNode = getNextNode(session);
+    if (nextNode) 
+      session.dialogData._currentNodeId = nextNode.id;
+    else
+      return session.endDialog();
+
+    return next();
+  }
 
 	var steps = [];
-	for (var i=0; i<self.steps; i++) steps.push(stepHandler);
+
+  function clearSession(session, results, next) {
+    if (session.dialogData._currentNodeId) { 
+      session.reset();
+    }
+    return next();
+  }
+
+  steps.push(clearSession);
+
+
+	for (var i=0; i<self.steps; i++) {
+    steps.push(stepInteractionHandler);
+    steps.push(stepResultCollectionHandler);
+    steps.push(setNextStepHandler);
+  }
+
 	return steps;
 }
 
