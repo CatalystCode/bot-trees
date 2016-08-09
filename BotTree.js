@@ -36,6 +36,8 @@ function BotTree(opts) {
         }
 
         function recursive(parent, node) {
+          if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
+          
           initNodes(parent, node.steps);
 
           var scenarios = node.scenarios || [];
@@ -43,7 +45,7 @@ function BotTree(opts) {
             initNodes(node, scenario.steps);
           }, this);
           
-          if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
+          
           nodeIds[node.id] = node;
         }
 
@@ -135,16 +137,19 @@ BotTree.prototype.getSteps = function() {
     if (!(results.response && varname)) return;
 
     session.dialogData[varname] = results.response;
-
-    if (currentNode.type === 'prompt') {
-      if (currentNode.data.type === 'time') {
-        session.dialogData[varname] = builder.EntityRecognizer.resolveTime([results.response]);
-      }
-      if (currentNode.data.type === 'choice') {
-        session.dialogData[varname] = currentNode.data.options[results.response.entity];
-      }
-      console.log("new session variable %s with value %s", varname, session.dialogData[varname]);
+    switch (currentNode.type) {
+      case 'prompt':
+        if (currentNode.data.type === 'time') {
+          session.dialogData[varname] = builder.EntityRecognizer.resolveTime([results.response]);
+        }
+        if (currentNode.data.type === 'choice') {
+          session.dialogData[varname] = results.response.entity; //currentNode.data.options[results.response.entity];
+        }
+        break;
     }
+   
+    console.log("new session variable %s with value %s", varname, session.dialogData[varname]);
+   
   }
 
 

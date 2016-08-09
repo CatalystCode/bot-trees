@@ -45,7 +45,7 @@ intents.matches(/^scenario1/i, [
 // ============================================
 
 var tree = require('./scenarios/sample.scenario.json');
-var botTree = new BotTree({tree, steps: 10});
+var botTree = new BotTree({tree});
 intents.matches(/^test/i, botTree.getSteps());
 
 // ============================================
