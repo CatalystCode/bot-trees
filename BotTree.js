@@ -1,3 +1,4 @@
+var extend = require('extend');
 
 var conditionHandler = require('./conditionHandler');
 
@@ -12,12 +13,20 @@ function BotTree(opts) {
 
     function normalizeTree(tree) {
         var nodeIds = {};
+        var extensions = null;
         recursive(null, tree);
         self._nodeIds = nodeIds;
 
         function initNodes(parent, nodes) {
             nodes = nodes || [];
             nodes.forEach(function(nodeItem, index) {
+
+                // In case of extension, copy all extension to current node
+                if (shouldExtend(nodeItem)) {
+                    var extension = tree.extensions[nodeItem.extensionId];
+                    extend(true, nodeItem, extension);
+                }
+
                 if (parent) nodeItem._parent = parent;
                 if (index > 0) nodeItem._prev = nodes[index - 1];
                 if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
@@ -36,6 +45,20 @@ function BotTree(opts) {
             
             if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
             nodeIds[node.id] = node;
+        }
+
+        function shouldExtend(nodeItem) {
+            if (!nodeItem.extensionId) return false;
+
+            var _parent = nodeItem.parent;
+            while (_parent) {
+                if (nodeItem.extensionId == _parent.extensionId) { 
+                    throw new Error('recursive extension found ' + nodeItem.extensionId);
+                }
+                _parent = _parent.parent;
+            }
+
+            return true;
         }
     }
 }

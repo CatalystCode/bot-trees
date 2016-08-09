@@ -19,6 +19,7 @@
   "dependencies": {
     "botbuilder": "^3.2.3",
     "express": "^4.14.0",
+    "extend": "^3.0.0",
     "jsep": "^0.3.0",
     "nconf": "^0.8.4"
   }
