@@ -109,7 +109,7 @@ function performAcion(session, next) {
     case 'prompt':
       var promptType = currentNode.data.type || 'text';
       builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
-      return next();
+      return;
     
     case 'handler':
       var handlerName = currentNode.data.name;
@@ -119,7 +119,7 @@ function performAcion(session, next) {
     default:
       var error = new Error('Node type ' + currentNode.type + ' is not recognized');
       console.error(error);
-      //throw error; 
+      throw error; 
   }  
 }
 
@@ -139,6 +139,7 @@ function performAcion(session, next) {
       if (currentNode.data.type === 'choice') {
         session.dialogData[varname] = currentNode.data.options[results.response.entity];
       }
+      console.log("new session variable %s with value %s", varname, session.dialogData[varname]);
     }
   }
 
@@ -151,7 +152,6 @@ function performAcion(session, next) {
     
     // processing
     console.log('stepHandler: ', currentNode.id);
-    session.send('_currentNodeId: ' + currentNode.id);
 
     performAcion(session, next);
   }

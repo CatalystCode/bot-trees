@@ -23,7 +23,7 @@ function evaluateExpression(session, expression) {
 
     case 'UnaryExpression':
       var value = evaluateExpression(session, exp.argument);
-      return calculateExpression(exp.operator, value1);
+      return calculateExpression(exp.operator, value);
 
     case 'Identifier':
       return session.dialogData[exp.name];
