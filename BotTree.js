@@ -21,17 +21,16 @@ function BotTree(opts) {
         function initNodes(parent, nodes) {
             nodes = nodes || [];
             nodes.forEach(function(nodeItem, index) {
+              // In case of subScenario, copy all subScenario to current node
+              if (isSubScenario(nodeItem)) {
+                  var subScenario = tree.subScenarios[nodeItem.subScenario];
+                  extend(true, nodeItem, subScenario);
+              }
 
-                // In case of extension, copy all extension to current node
-                if (shouldExtend(nodeItem)) {
-                    var extension = tree.extensions[nodeItem.extensionId];
-                    extend(true, nodeItem, extension);
-                }
-
-                if (parent) nodeItem._parent = parent;
-                if (index > 0) nodeItem._prev = nodes[index - 1];
-                if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
-                recursive(parent, nodeItem);
+              if (parent) nodeItem._parent = parent;
+              if (index > 0) nodeItem._prev = nodes[index - 1];
+              if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
+              recursive(parent, nodeItem);
             }, this); 
         }
 
@@ -48,15 +47,15 @@ function BotTree(opts) {
             nodeIds[node.id] = node;
         }
 
-        function shouldExtend(nodeItem) {
-            if (!nodeItem.extensionId) return false;
+        function isSubScenario(nodeItem) {
+            if (!nodeItem.subScenario) return false;
 
-            var _parent = nodeItem.parent;
-            while (_parent) {
-                if (nodeItem.extensionId == _parent.extensionId) { 
-                    throw new Error('recursive extension found ' + nodeItem.extensionId);
-                }
-                _parent = _parent.parent;
+            var parent = nodeItem._parent;
+            while (parent) {
+              if (nodeItem.subScenario === parent.subScenario) { 
+                  throw new Error('recursive extension found ' + nodeItem.subScenario);
+              }
+              parent = parent._parent;
             }
 
             return true;
@@ -65,7 +64,7 @@ function BotTree(opts) {
 }
 
 BotTree.prototype.getSteps = function() {
-	var self = this;
+  var self = this;
 
   /**
    * session - bot session variable
@@ -97,31 +96,31 @@ BotTree.prototype.getSteps = function() {
     return next;
   }
 
-function getCurrentNode(session) {
-  return self._nodeIds[session.dialogData._currentNodeId];
-}
-  
-function performAcion(session, next) {
-
-  var currentNode = getCurrentNode(session);
-  
-  switch (currentNode.type) {
-    case 'prompt':
-      var promptType = currentNode.data.type || 'text';
-      builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
-      return;
+  function getCurrentNode(session) {
+    return self._nodeIds[session.dialogData._currentNodeId];
+  }
     
-    case 'handler':
-      var handlerName = currentNode.data.name;
-      var handler = require('./handlers/' + handlerName);
-      return handler(session, next);
-  
-    default:
-      var error = new Error('Node type ' + currentNode.type + ' is not recognized');
-      console.error(error);
-      throw error; 
-  }  
-}
+  function performAcion(session, next) {
+
+    var currentNode = getCurrentNode(session);
+    
+    switch (currentNode.type) {
+      case 'prompt':
+        var promptType = currentNode.data.type || 'text';
+        builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
+        return;
+      
+      case 'handler':
+        var handlerName = currentNode.data.name;
+        var handler = require('./handlers/' + handlerName);
+        return handler(session, next);
+    
+      default:
+        var error = new Error('Node type ' + currentNode.type + ' is not recognized');
+        console.error(error);
+        throw error; 
+    }  
+  }
 
   function collectResponse(session, results) {
 
@@ -150,9 +149,7 @@ function performAcion(session, next) {
     }
     var currentNode = self._nodeIds[session.dialogData._currentNodeId];
     
-    // processing
     console.log('stepHandler: ', currentNode.id);
-
     performAcion(session, next);
   }
 
@@ -162,7 +159,6 @@ function performAcion(session, next) {
   }
 
   function setNextStepHandler(session, args, next) {
-
     var nextNode = getNextNode(session);
     if (nextNode) 
       session.dialogData._currentNodeId = nextNode.id;
@@ -174,6 +170,7 @@ function performAcion(session, next) {
 
 	var steps = [];
 
+  // temporary- clear session every time we start
   function clearSession(session, results, next) {
     if (session.dialogData._currentNodeId) { 
       session.reset();

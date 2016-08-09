@@ -12,7 +12,7 @@
       "data": { "type": "time", "text": "When did it start?" }
     },
     {
-      "extensionId": "smoking"
+      "subScenario": "smoking"
     },
     {
       "id": "workout",
@@ -124,7 +124,7 @@
       "data": { "name": "summary" }
     }
   ],
-  "extensions": {
+  "subScenarios": {
     "smoking": {
       "id": "isSmoking",
       "type": "prompt",
