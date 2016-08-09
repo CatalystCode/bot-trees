@@ -2,7 +2,7 @@ var path = require('path');
 var express = require('express');
 var builder = require('botbuilder');
 var app = express();
-var BotGraphDialog = require('./lib/BotGraphDialog');
+var BotGraphDialog = require('bot-graph-dialog');
 
 var config = require('./config');
 
