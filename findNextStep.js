@@ -22,7 +22,8 @@ module.exports = function findNextStep(session, tree) {
     }
   }
 
-  // If there is no selected scenario
+  // If there is no selected scenario, move to the next node.
+  // If there is no next node, look recursively for next on parent nodes.
   var _node = current;
   while (!next && _node) {
     next = _node.next;
