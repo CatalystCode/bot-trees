@@ -9,19 +9,27 @@ function BotTree(opts) {
 
     function normalizeTree(tree) {
         var nodeIds = {};
-        recursive(tree);
+        recursive(null, tree);
         this._nodeIds = nodeIds;
 
-        function recursive(node) {
-            if (node.steps && node.steps.length > 0)
-                node.steps.forEach(function(nodeItem, index) {
-                    recursive(nodeItem);
-                }, this); 
-            if (node.scenarios && node.scenarios.length > 0)
-                node.scenarios.forEach(function(nodeItem, index) {
-                    recursive(nodeItem);
-                }, this); 
+        function initNodes(parent, nodes) {
+            nodes = nodes || [];
+            nodes.forEach(function(nodeItem, index) {
+                if (parent) nodeItem._parent = parent;
+                if (index > 0) nodeItem._prev = nodes[index - 1];
+                if (nodes.length > index + 1) nodeItem._next = nodes[index + 1];
+                recursive(parent, nodeItem);
+            }, this); 
+        }
 
+        function recursive(parent, node) {
+            initNodes(parent, node.steps);
+
+            var scenarios = node.scenarios || [];
+            scenarios.forEach(function(scenario) {
+                initNodes(node, scenario.steps);
+            }, this);
+            
             if (node.id) nodeIds[node.id] = node;
         }
     }
