@@ -1,6 +1,6 @@
 {
   "name": "Stomach pain",
-  "children": [
+  "steps": [
     {
       "id": "getAge",
       "type": "prompt",
