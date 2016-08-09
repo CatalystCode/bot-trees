@@ -18,6 +18,7 @@ Create a `config/dev.private.json` base on the `config/dev.sample.json` file. Ed
 After connecting your bot to this endpoint, type `workout` in order to start the workout scenario.
 
 
-
+Demo
+====
 ![Workout1](https://github.com/catalystcode/bot-trees/raw/master/images/workout1.png "workout1 demo")
 ![Workout2](https://github.com/catalystcode/bot-trees/raw/master/images/workout2.png "workout2 demo")
