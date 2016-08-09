@@ -42,6 +42,47 @@ intents.matches(/^scenario1/i, [
     }
 ]);
 
+
+
+// ============================================
+
+var tree = require('./sampleTree.json');
+
+function normalizeTree(tree) {
+  var flat = {};
+  recursive(tree);
+  return flat;
+
+  function recursive(node) {
+    if (node.next && node.next.length > 0)
+      node.next.forEach(function(nextNodeItem, index) {
+        recursive(nextNodeItem);
+        console.log('deleting node id', nextNodeItem.id);
+        node.next[index] = {
+          id: nextNodeItem.id,
+          condition: nextNodeItem.condition
+        };
+      }, this); 
+    console.log('adding node id', node.id);
+    //delete node.next;
+    flat[node.id] = node;
+  }
+}
+
+function stepHandler(session, args, a, b) {
+  console.log('stepHandler: ');
+  
+}
+var steps = [];
+for (var i=0; i<100; i++) steps.push(stepHandler);
+
+var flatTree = normalizeTree(tree);
+
+intents.matches(/^scenario2/i, steps);
+
+// ============================================
+
+
 app.post('/api/messages', connector.listen());
 
 app.listen(port, function () {
