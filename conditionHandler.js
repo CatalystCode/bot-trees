@@ -1,12 +1,12 @@
 var jsep = require('jsep');
 
 /**
- * parseExpression
+ * evaluateExpression
  * ===============
  * return true/false based on the expression
  * can use numbers, session variables, and comparrison operators
- * Example 1: if (parseExpression(session, 'days > 7')) {...}
- * Example 2: if (parseExpression(session, 'age - years > 20')) {...}
+ * Example 1: if (evaluateExpression(session, 'days > 7')) {...}
+ * Example 2: if (evaluateExpression(session, 'age - years > 20')) {...}
  */
 function evaluateExpression(session, expression) {
 
@@ -17,16 +17,16 @@ function evaluateExpression(session, expression) {
 
   switch (exp.type) {
     case 'BinaryExpression':
-      var value1 = parseExpression(session, exp.left);
-      var value2 = parseExpression(session, exp.right);
+      var value1 = evaluateExpression(session, exp.left);
+      var value2 = evaluateExpression(session, exp.right);
       return calculateExpression(exp.operator, value1, value2);
 
     case 'UnaryExpression':
-      var value = parseExpression(session, exp.argument);
+      var value = evaluateExpression(session, exp.argument);
       return calculateExpression(exp.operator, value1);
 
     case 'Identifier':
-      return session[exp.name];
+      return session.dialogData[exp.name];
 
     case 'Literal':
       return exp.value;

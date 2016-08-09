@@ -19,10 +19,27 @@ intents.onDefault([
 bot.dialog('/', intents);
 
 
+var histeps = [];
+var tree = null;
+var dialogHandler = require('./dialogHandler');
+
 intents.matches(/^(help|hi|hello)/i, [
-    function (session) {
-        session.send('hello! help message etc... :-)');
-    }
+  function performAction(session) {
+
+    dialogHandler.performAcion(session, tree, builder);
+
+    session.next();
+  },
+  function collectData(session, results) {
+
+    var currentNode = getCurrentStep(session, tree);
+    dialogHandler.collectResponse(session, tree, builder, results);
+    
+    session.next();
+  },
+  function nextStep(session) {
+    // choose next step...
+  }
 ]);
 
 intents.matches(/^scenario1/i, [

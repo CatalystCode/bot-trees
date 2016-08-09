@@ -1,4 +1,6 @@
 
+var conditionHandler = require('./conditionHandler');
+
 function BotTree(opts) {
     if (!opts.tree) throw new Error('tree is required');
     
@@ -36,47 +38,107 @@ function BotTree(opts) {
     }
 }
 
-BotTree.prototype.findNextStep = function(session, tree) {
-  var next = null;
-  var current = tree._nodeIds[session.currentNodeId];
 
-  // If there are child scenarios, see if one of them answers a condition
-  // In case it is, choose the first step in that scenario to as the next step
-  if (current.scenarios) {
-    for (var scenarioIndex in current.scenarios) {
 
-      var scenario = current.scenarios[scenarioIndex];
+BotTree.prototype.getSteps = function() {
+	var self = this;
+
+  /**
+   * session - bot session variable
+   * tree - full json scenario template
+   */
+  function getNextNode(session) {
+    var next = null;
+    var current = self._nodeIds[session.dialogData._currentNodeId];
+
+    // If there are child scenarios, see if one of them answers a condition
+    // In case it is, choose the first step in that scenario to as the next step
+    var scenarios = current.scenarios || [];
+    for (var i=0; i<scenarios.length; i++) {
+      var scenario = scenarios[i];
       if (conditionHandler.evaluateExpression(session, scenario.condition)) {
-
-        next = (scenario.nodeId && tree._nodesIds[scenario.nodeId]) || scenario.steps[0];
+        next = (scenario.nodeId && self._nodeIds[scenario.nodeId]) || scenario.steps[0];
         break;
+      }
+    }
+
+    // If there is no selected scenario, move to the next node.
+    // If there is no next node, look recursively for next on parent nodes.
+    var _node = current;
+    while (!next && _node) {
+      next = _node._next;
+      _node = _node._parent;
+    }
+
+    return next;
+  }
+
+  function performAcion(session, tree, builder) {
+
+    var currentNode = getCurrentStep(session, tree);
+    
+    switch (currentNode.type) {
+      case 'prompt':
+        var promptType = currentNode.data.type || 'text';
+        builder.Prompts[promptType](session, currentNode.data.text, currentNode.data.options);
+        break;
+    
+      default:
+        break;
+    }  
+  }
+
+  function collectResponse(session, tree, builder, results) {
+
+    var currentNode = getCurrentStep(session, tree);
+    var varname = currentNode.varname || currentNode.id;
+    if (results.response && varname) {
+
+      session.dialogData[varname] = results.response;
+
+      if (currentNode.type == 'prompt') {
+        if (currentNode.data.type == 'time') {
+          session.dialogData[varname] = builder.EntityRecognizer.resolveTime([results.response]);
+        }
+        if (currentNode.data.type == 'choice') {
+          session.dialogData[varname] = currentNode.data.options[results.response.entity];
+        }
+        
+      }
+      switch (currentNode.varType) {
+        case 'time':
+          break;
+      
+        default:
+          break;
       }
     }
   }
 
-  // If there is no selected scenario, move to the next node.
-  // If there is no next node, look recursively for next on parent nodes.
-  var _node = current;
-  while (!next && _node) {
-    next = _node.next;
-    _node = _node.parent;
-  }
 
-  return next;
-}
+	function stepHandler(session, args, next) {
+      if (!session.dialogData._currentNodeId) { 
+        session.dialogData._currentNodeId = self.tree.steps[0].id;
+      }
+      var currentNode = self._nodeIds[session.dialogData._currentNodeId];
+      
+      // processing
+      console.log('stepHandler: ', currentNode.id);
+      session.send('_currentNodeId: ' + currentNode.id);
+      // end processing
 
-BotTree.prototype.getSteps = function() {
-    var self = this;
+      var nextNode = getNextNode(session);
+      if (nextNode) 
+        session.dialogData._currentNodeId = nextNode.id;
+      else
+        return session.endDialog();
 
+			return next();
+	}
 
-    function stepHandler(session, args, a, b) {
-        console.log('stepHandler: ');
-        session.send('text ...!');
-    }
-
-    var steps = [];
-    for (var i=0; i<self.steps; i++) steps.push(stepHandler);
-    return steps;
+	var steps = [];
+	for (var i=0; i<self.steps; i++) steps.push(stepHandler);
+	return steps;
 }
 
 module.exports = BotTree;
