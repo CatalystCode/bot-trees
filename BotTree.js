@@ -25,6 +25,7 @@ function BotTree(opts) {
             }, this); 
         }
 
+        var uniqueNodeId = 1;
         function recursive(parent, node) {
             initNodes(parent, node.steps);
 
@@ -33,7 +34,8 @@ function BotTree(opts) {
                 initNodes(node, scenario.steps);
             }, this);
             
-            if (node.id) nodeIds[node.id] = node;
+            if (!node.id) { node.id = '_node_' + (uniqueNodeId++); } 
+            nodeIds[node.id] = node;
         }
     }
 }

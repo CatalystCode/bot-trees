@@ -2,25 +2,19 @@
   "name": "Stomach pain",
   "steps": [
     {
-      "id": "getAge",
+      "id": "age",
       "type": "prompt",
-      "data": { "text": "How old are you?" },
-      "varname": "age"
+      "data": { "type": "number", "text": "How old are you?" }
     },
     {
       "id": "whenStart",
-      "type": "options",
-      "data": {
-        "text": "When did it start?",
-        "options": ["1 hour", "1 day", "2 days", "1 week"]
-      },
-      "varname": "whenStart"
+      "type": "prompt",
+      "data": { "type": "time", "text": "When did it start?" }
     },
     {
-      "id": "smoking",
-      "type": "confirm",
-      "data": { "text": "Do you smoke?" },
-      "varname": "isSmoking",
+      "id": "isSmoking",
+      "type": "prompt",
+      "data": { "type": "confirm", "text": "Do you smoke?" },
       "scenarios": [
         {
           "condition": "isSmoking",
@@ -28,8 +22,7 @@
             {
               "id": "smokeTime",
               "type": "prompt",
-              "data": { "text": "For how many years?" },
-              "varname": "smokeTime"
+              "data": { "type": "number", "text": "For how many years?" }
             }
           ]
         },
@@ -37,10 +30,9 @@
           "condition": "!isSmoking",
           "steps": [
             {
-              "id": "ruSure",
-              "type": "confirm",
-              "data": { "text": "Are you sure?" },
-              "varname": "sureNotSmoking",
+              "id": "sureNotSmoking",
+              "type": "prompt",
+              "data": { "type":"confirm", "text": "Are you sure?" },
               "scenarios": [
                 {
                   "condition": "!sureNotSmoking",
@@ -54,8 +46,9 @@
     },
     {
       "id": "workout",
-      "type": "options",
+      "type": "prompt",
       "data": { 
+        "type": "choice",
         "text": "What kind of workout do you do?",
         "options":  [ "None", "Crossfit", "TRX", "Kung-Fu" ]
       },
@@ -67,17 +60,15 @@
             {
               "id": "cfWeight",
               "type": "prompt",
-              "data": { "text": "How much do you lift?" },
-              "varname": "cfWeight",
+              "data": { "type":"number", "text": "How much do you lift?" },
               "scenarios": [
                 {
                   "condition": "cfWeight <= 100",
                   "steps": [
                     {
-                      "id": "cfWeightSmall",
+                      "id": "cfWeightSmallReason",
                       "type": "prompt",
-                      "data": { "text": "Why so lite?" },
-                      "varname": "cfWeightSmallReason"
+                      "data": { "text": "Why so lite?" }
                     }
                   ]
                 },
@@ -86,9 +77,8 @@
                   "steps": [
                     {
                       "id": "cfCrazy",
-                      "type": "confirm",
-                      "data": { "text": "Are you crazy?" },
-                      "varname": "cfCrazy",
+                      "type": "prompt",
+                      "data": { "type":"confirm", "text": "Are you crazy?" },
                       "scenarios": [
                         {
                           "condition": "cfCrazy",
@@ -106,20 +96,17 @@
                             {
                               "id": "cfHowLong",
                               "type": "prompt",
-                              "data": {"text": "How long have you been working out?" },
-                              "varname": "cfHowLong"
+                              "data": { "type":"number", "text": "How many years have you been working out?" }
                             },
                             {
                               "id": "cfInstructor",
                               "type": "prompt",
-                              "data": { "text": "Who is your instructor?" },
-                              "varname": "cfInstructor"
+                              "data": { "text": "Who is your instructor?" }
                             },
                             {
                               "id": "cfWhere",
                               "type": "prompt",
-                              "data": { "text": "Where do you work out?" },
-                              "varname": "cfWhere"
+                              "data": { "text": "Where do you work out?" }
                             }
                           ]
                         }
@@ -137,8 +124,11 @@
             {
               "id": "trxStrength",
               "type": "prompt",
-              "data": { "text": "What is the strength of the rope?" },
-              "varname": "trxStrength"
+              "data": {
+                "type":"choice",
+                "text": "What is the strength of the rope?",
+                "options": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+              }
             }
           ]
         },
@@ -148,12 +138,15 @@
             {
               "id": "kfYears",
               "type": "prompt",
-              "data": { "text": "How many years have you neen practicing?" },
-              "varname": "kfYears"
+              "data": { "type":"number", "text": "How many years have you neen practicing?" }
             }
           ]
         }
       ]
+    },
+    {
+      "type": "text",
+      "data": { "text": "Please wait while we finalize the data..." }
     },
     {
       "id": "finalize",
