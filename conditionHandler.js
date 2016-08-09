@@ -21,6 +21,10 @@ function parseExpression(session, expression) {
       var value2 = parseExpression(session, exp.right);
       return evaluateExpression(exp.operator, value1, value2);
 
+    case 'UnaryExpression':
+      var value = parseExpression(session, exp.argument);
+      return evaluateExpression(exp.operator, value1);
+
     case 'Identifier':
       return session[exp.name];
 
@@ -34,6 +38,10 @@ function parseExpression(session, expression) {
 
 function evaluateExpression(operator, value1, value2) {
   switch (operator) {
+
+    case '!':
+      return !value1;
+
     case '<':
       return value1 < value2;
 
