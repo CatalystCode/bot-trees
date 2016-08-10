@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/CatalystCode/bot-trees#readme",
   "dependencies": {
+    "azure-logging": "^0.3.2",
     "botbuilder": "^3.2.3",
     "express": "^4.14.0",
     "extend": "^3.0.0",

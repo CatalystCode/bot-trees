@@ -1,41 +1,45 @@
-var path = require('path');
-var express = require('express');
-var builder = require('botbuilder');
-var app = express();
-var BotGraphDialog = require('bot-graph-dialog');
-
-var config = require('./config');
-
-var connector = new builder.ChatConnector(config.bot);
-var bot = new builder.UniversalBot(connector);
-
-var port = process.env.PORT || 3978;
-
-var intents = new builder.IntentDialog();     
-
-bot.dialog('/', intents);
-
-intents.matches(/^(help|hi|hello)/i, [
-  function (session) {
-    session.send('Hi, how can I help you?');
-  }
-]);
-
-// ============================================
-
-var scenariosPath = path.join(__dirname, 'scenarios');
-var handlersPath = path.join(__dirname, 'handlers');
-
-var routerGraph = require('./scenarios/router.json');
-var routerGraphDialog = new BotGraphDialog({tree: routerGraph, scenariosPath, handlersPath});
-intents.onDefault(routerGraphDialog.getSteps());
-
-// ============================================
 
 
-app.post('/api/messages', connector.listen());
 
-app.listen(port, function () {
-  console.log('listening on port %s', port);
+process.on('uncaughtException', function (er) {
+  console.error('uncaughtException', er.stack)
+  setTimeout(() => {
+    process.exit(1);
+  }, 3000);
 });
 
+var path = require('path');
+var express = require('express');
+var port = process.env.PORT || 3978;
+var log = require('./log');
+
+if (log.config.enabled) {
+  log.init({
+    domain: process.env.COMPUTERNAME || '',
+    instanceId: log.getInstanceId(),
+    app: 'bot',
+    level: log.config.level,
+    transporters: log.config.transporters
+  }, function(err) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('starting bot...');
+    startBot();
+  });
+} else {
+  startBot();
+}
+
+
+function startBot() {
+  
+  var app = express();
+  
+  var botConnector = require('./bot');
+  app.post('/api/messages', botConnector.listen());
+
+  app.listen(port, function () {
+    console.log('listening on port %s', port);
+  });
+}
