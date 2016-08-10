@@ -11,50 +11,24 @@ var bot = new builder.UniversalBot(connector);
 
 var port = process.env.PORT || 3978;
 
-var intents = new builder.IntentDialog();
-intents.onDefault([
-    function (session, results) {
-        session.send('Hi, what\'s your question?');
-    }
-]);       
+var intents = new builder.IntentDialog();     
 
 bot.dialog('/', intents);
 
 intents.matches(/^(help|hi|hello)/i, [
   function (session) {
-    session.send('welcome message...');
+    session.send('Hi, how can I help you?');
   }
 ]);
-
-intents.matches(/^scenario1/i, [
-    function (session) {
-       builder.Prompts.confirm(session, 'confirm?', { listStyle: builder.ListStyle.button });
-    },
-    function (session, result) {
-        var answer = result.response;
-        if (answer) {
-          session.send('you said yes!');
-        } else {
-          session.send('you said no... :/');
-        }
-
-        session.endDialog();
-    }
-]);
-
 
 // ============================================
 
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-var workoutGraph = require('./scenarios/workout.json');
-var workoutGraphDialog = new BotGraphDialog({tree: workoutGraph, scenariosPath, handlersPath});
-intents.matches(/^workout/i, workoutGraphDialog.getSteps());
-
-var botsGraph = require('./scenarios/bots.json');
-var botsGraphDialog = new BotGraphDialog({tree: botsGraph, scenariosPath, handlersPath});
-intents.matches(/^bots/i, botsGraphDialog.getSteps());
+var routerGraph = require('./scenarios/router.json');
+var routerGraphDialog = new BotGraphDialog({tree: routerGraph, scenariosPath, handlersPath});
+intents.onDefault(routerGraphDialog.getSteps());
 
 // ============================================
 

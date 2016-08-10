@@ -4,7 +4,7 @@
     {
       "id": "whatDoYouWantToDo",
       "type": "prompt",
-      "data": { "text": "What do you want to do?" }
+      "data": { "text": "try to set an alarm or commands like quit, start over, etc..." }
     },
     {
       "id": "userIntent",
@@ -19,7 +19,11 @@
           "steps": [
             {
               "type": "handler",
-              "data": { "name": "set_alarm", "source": "userIntent" }
+              "data": { 
+                "name": "set_alarm", 
+                "source": "userIntent",
+                "target": "alarmTime" 
+              }
             }
           ]
         },
