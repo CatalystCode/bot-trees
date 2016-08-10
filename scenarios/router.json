@@ -3,16 +3,10 @@
   "type": "sequence",
   "steps": [
     {
-      "id": "request",
-      "type": "prompt",
-      "description": "this router askes the user what he wants to do and directs him to the right scenario",
-      "data": { "text": "Hey there, how can I help you?" }
-    },
-    {
       "id": "scenarioIntent",
       "type": "score",
       "data": { 
-        "source": "request", 
+        "source": "__message", 
         "models": [ "dialog-router" ]
       },
       "scenarios": [
