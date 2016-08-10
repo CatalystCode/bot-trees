@@ -24,6 +24,10 @@
           ]
         },
         {
+          "condition": "userIntent.intent == 'start over'",
+          "nodeId": "whatDoYouWantToDo"
+        },
+        {
           "condition": "userIntent.intent == 'quit'",
           "steps": [
             {
