@@ -11,47 +11,24 @@ var bot = new builder.UniversalBot(connector);
 
 var port = process.env.PORT || 3978;
 
-var intents = new builder.IntentDialog();
-intents.onDefault([
-    function (session, results) {
-        session.send('Hi, what\'s your question?');
-    }
-]);       
+var intents = new builder.IntentDialog();     
 
 bot.dialog('/', intents);
 
 intents.matches(/^(help|hi|hello)/i, [
   function (session) {
-    session.send('welcome message...');
+    session.send('Hi, how can I help you?');
   }
 ]);
-
-intents.matches(/^scenario1/i, [
-    function (session) {
-       builder.Prompts.confirm(session, 'confirm?', { listStyle: builder.ListStyle.button });
-    },
-    function (session, result) {
-        var answer = result.response;
-        if (answer) {
-          session.send('you said yes!');
-        } else {
-          session.send('you said no... :/');
-        }
-
-        session.endDialog();
-    }
-]);
-
 
 // ============================================
 
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-
-intents.matches(/^stomach/i, new BotGraphDialog({tree: require('./scenarios/stomachPain.json'), scenariosPath, handlersPath}).getSteps());
-intents.matches(/^smoking/i, new BotGraphDialog({tree: require('./scenarios/smoking.json'), scenariosPath, handlersPath}).getSteps());
-intents.matches(/^bots/i, new BotGraphDialog({tree: require('./scenarios/bots.json'), scenariosPath, handlersPath}).getSteps());
+var routerGraph = require('./scenarios/router.json');
+var routerGraphDialog = new BotGraphDialog({tree: routerGraph, scenariosPath, handlersPath});
+intents.onDefault(routerGraphDialog.getSteps());
 
 // ============================================
 
