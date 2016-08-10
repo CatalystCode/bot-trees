@@ -21,6 +21,10 @@
     "express": "^4.14.0",
     "extend": "^3.0.0",
     "jsep": "^0.3.0",
-    "nconf": "^0.8.4"
+    "nconf": "^0.8.4",
+    "promise": "^7.1.1",
+    "request": "^2.74.0",
+    "request-promise": "^4.1.1",
+    "underscore": "^1.8.3"
   }
 }
