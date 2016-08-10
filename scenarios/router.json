@@ -1,5 +1,6 @@
 {
-  "name": "router",
+  "id": "router",
+  "type": "sequence",
   "steps": [
     {
       "id": "request",
