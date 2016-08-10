@@ -12,7 +12,7 @@
       "type": "score",
       "data": { 
         "source": "request", 
-        "bots": [ "dialog-router" ]
+        "models": [ "dialog-router" ]
       },
       "scenarios": [
         {
@@ -26,7 +26,7 @@
       ]
     }
   ],
-  "bots": [
+  "models": [
     {
       "name": "dialog-router",
       "url": "https://api.projectoxford.ai/luis/v1/application?id=86e0ddab-7309-45e7-937a-ed92725004cf&subscription-key=d7b46a6c72bf46c1b67f2c4f21acf960&q="

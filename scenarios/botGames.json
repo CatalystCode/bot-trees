@@ -1,5 +1,5 @@
 {
-  "name": "Bots Scorer",
+  "name": "Models Scorer",
   "steps": [
     {
       "id": "whatDoYouWantToDo",
@@ -11,7 +11,7 @@
       "type": "score",
       "data": { 
         "source": "whatDoYouWantToDo", 
-        "bots": [ "bot-common-responses", "Bottle" ]
+        "models": [ "bot-common-responses", "Bottle" ]
       },
       "scenarios": [
         {
@@ -47,7 +47,7 @@
       "data": { "text": "Over and out." }
     }
   ],
-  "bots": [
+  "models": [
     {
       "name": "bot-common-responses",
       "url": "https://api.projectoxford.ai/luis/v1/application?id=7ff935f4-fe33-4a2a-b155-b82dbbf456ed&subscription-key=d7b46a6c72bf46c1b67f2c4f21acf960&q="
