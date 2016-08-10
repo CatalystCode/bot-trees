@@ -48,13 +48,10 @@ intents.matches(/^scenario1/i, [
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-var workoutGraph = require('./scenarios/workout.json');
-var workoutGraphDialog = new BotGraphDialog({tree: workoutGraph, scenariosPath, handlersPath});
-intents.matches(/^workout/i, workoutGraphDialog.getSteps());
 
-var botsGraph = require('./scenarios/bots.json');
-var botsGraphDialog = new BotGraphDialog({tree: bots, scenariosPath, handlersPath});
-intents.matches(/^bots/i, botsGraphDialog.getSteps());
+intents.matches(/^stomach/i, new BotGraphDialog({tree: require('./scenarios/stomachPain.json'), scenariosPath, handlersPath}).getSteps());
+intents.matches(/^smoking/i, new BotGraphDialog({tree: require('./scenarios/smoking.json'), scenariosPath, handlersPath}).getSteps());
+intents.matches(/^bots/i, new BotGraphDialog({tree: require('./scenarios/bots.json'), scenariosPath, handlersPath}).getSteps());
 
 // ============================================
 
