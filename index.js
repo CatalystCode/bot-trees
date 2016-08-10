@@ -52,6 +52,10 @@ var workoutGraph = require('./scenarios/workout.json');
 var workoutGraphDialog = new BotGraphDialog({tree: workoutGraph, scenariosPath, handlersPath});
 intents.matches(/^workout/i, workoutGraphDialog.getSteps());
 
+var botsGraph = require('./scenarios/bots.json');
+var botsGraphDialog = new BotGraphDialog({tree: bots, scenariosPath, handlersPath});
+intents.matches(/^bots/i, botsGraphDialog.getSteps());
+
 // ============================================
 
 

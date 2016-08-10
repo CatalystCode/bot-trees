@@ -1,0 +1,47 @@
+{
+  "name": "Bots Scorer",
+  "steps": [
+    {
+      "id": "whatDoYouWantToDo",
+      "type": "prompt",
+      "data": { "text": "What do you want to do?" }
+    },
+    {
+      "id": "userIntent",
+      "type": "score",
+      "data": { 
+        "source": "whatDoYouWantToDo", 
+        "bots": [ "bot-common-responses", "Bottle" ]
+      },
+      "scenarios": [
+        {
+          "condition": "userIntent == 'set_alarm'",
+          "steps": [
+            {
+              "type": "handler",
+              "data": { "name": "set_alarm" }
+            }
+          ]
+        },
+        {
+          "condition": "userIntent == 'quit'",
+          "steps": [
+            {
+              "type": "exit"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bots": [
+    {
+      "name": "bot-common-responses",
+      "url": "https://api.projectoxford.ai/luis/v1/application?id=7ff935f4-fe33-4a2a-b155-b82dbbf456ed&subscription-key=d7b46a6c72bf46c1b67f2c4f21acf960&q="
+    },
+    {
+      "name": "Bottle",
+      "url": "https://api.projectoxford.ai/luis/v1/application?id=0a2cc164-5a19-47b7-b85e-41914d9037ba&subscription-key=d7b46a6c72bf46c1b67f2c4f21acf960&q="
+    }
+  ]
+}
