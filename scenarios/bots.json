@@ -15,23 +15,28 @@
       },
       "scenarios": [
         {
-          "condition": "userIntent == 'set_alarm'",
+          "condition": "userIntent.intent == 'set alarm'",
           "steps": [
             {
               "type": "handler",
-              "data": { "name": "set_alarm" }
+              "data": { "name": "set_alarm", "source": "userIntent" }
             }
           ]
         },
         {
-          "condition": "userIntent == 'quit'",
+          "condition": "userIntent.intent == 'quit'",
           "steps": [
             {
-              "type": "exit"
+              "type": "end",
+              "data": { "text": "Thank you, goodbye." }
             }
           ]
         }
       ]
+    },
+    {
+      "type": "text",
+      "data": { "text": "Over and out." }
     }
   ],
   "bots": [
