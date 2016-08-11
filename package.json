@@ -28,6 +28,7 @@
     "request": "^2.74.0",
     "request-promise": "^4.1.1",
     "strformat": "0.0.7",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "bot-graph-dialog": "git+https://git@github.com/CatalystCode/bot-graph-dialog.git"
   }
 }
