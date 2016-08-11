@@ -21,7 +21,10 @@
       "data": { 
         "type": "choice",
         "text": "What kind of workout do you do?",
-        "options":  [ "None", "Crossfit", "TRX", "Kung-Fu" ]
+        "options":  [ "None", "Crossfit", "TRX", "Kung-Fu" ],
+        "config": {
+          "listStyle": "button"
+        }
       },
       "varname": "workout",
       "scenarios": [
