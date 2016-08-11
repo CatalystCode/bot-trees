@@ -1,5 +1,6 @@
 {
-  "name": "Stomach pain",
+  "id": "stomachPain",
+  "type": "sequence",
   "steps": [
     {
       "id": "age",
@@ -123,5 +124,5 @@
       "type": "handler",
       "data": { "name": "summary" }
     }
-  ]
+  ]  
 }
