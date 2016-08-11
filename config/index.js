@@ -8,6 +8,7 @@
 var nconf = require('nconf');
 var path = require('path');
 
-var config = nconf.env().file({ file: path.join(__dirname, 'dev.private.json') });
+var envFile = path.join(__dirname, 'cloud.private.json');
+var config = nconf.env().file({ file: envFile });
 
 module.exports = config;
