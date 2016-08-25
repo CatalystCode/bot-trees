@@ -1,0 +1,53 @@
+Step 4 Flow
+
+    Check if there is a bill run delay advisory:
+        Run Delay:
+            Follow cascaded interim handling related to the advisory. 
+        No: Continue to check bill
+
+    Check Bill Delivery Mode:
+        Paper:
+            Check if billing address is correct:
+                Billing Address Correct:
+                    Check if bill delivery is within or beyond SLA:
+                        In SLA: 
+                            Advise TAT for bill delivery.
+                            Offer to enroll to Paperless Billing.
+                                 If customer agrees
+                                    Enroll Customer
+                            Go to Offer Bill Print via Email
+                        Out of SLA:
+                            Deliver SLA appology Script
+                            Offer to enroll in Paperless Billing
+                                If customer agrees
+                                    Proceed with Paperless Bill Enrolment. Refer to Change Bill Delivery Mode handling. 
+                                If customer disagrees 
+                                    Dispatch a caChange the email addressse for validating bill delivery and bill resending
+                            Go to Offer Bill Print via Email
+                    Billing Address Incorrect:
+                        Prompt for the correct billing address including landmark or establishment near customer's address.
+                        Change the billing address. Refer to Updating Billing Arrangement handling.
+                        Dispatch a case for bill resending to correct address. 
+                        Go to Offer Bill Print via Email
+        Paperless:
+            Check if email address is correct                 
+                If Email address Correct:
+                    Check if within SLA
+                        If within SLA:
+                            Advise customer that bill will be sent to registered email address.  
+                            Go to Offer Bill Print via Email
+                        If beyond SLA
+                            Apologize to the customer
+                            Go to Offer Bill Print via Email
+                If Email Incorrect:
+                    Prompt the correct email address.
+                    Change the email address
+                     Dispatch a case for bill resending to correct email address
+
+    Offer Bill reprint via Email 
+        If customer agrees:
+            Resend the billing statement
+        If customer declines:
+            Remind him to register to MyBills online so he can view his billing statement while waiting for the copy of the bill.
+
+

@@ -19,7 +19,7 @@
                 "steps": [
                 {
                     "type": "handler",
-                    "data": { "name": "encodeMyAdmin", "input": "oldReference" }
+                    "data": { "name": "placeholder", "input": "oldReference" ,"text":"encoding in My Admin Tool and the status is 'pending investigation'"}
                 }
                 ]
             },
@@ -37,7 +37,7 @@
         {
             "id": "authenticate",
             "type": "handler",
-            "data": { "name": "authenticate" }
+            "data": { "name": "placeholder", "text":"Authentication Confirmed: Welcome Mr.Smith" }
         }
         ]
     }

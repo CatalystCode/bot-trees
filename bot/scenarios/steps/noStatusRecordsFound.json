@@ -1,22 +1,271 @@
 {
-"id": "noStatusRecordsFound",
-"type": "sequence",
-"steps": [
-    { 
-        "type": "handler",
-            "data": { "name": "genieSimulator", "output": "runDelayAdvisory" },
+    "id": "noStatusRecordsFound",
+    "type": "sequence",
+    "steps": [
+        {
+            "id": "rundelay",
+            "type": "handler",
+            "data": {
+                "name": "genieSimulator",
+                "output": "runDelayAdvisory"
+            },
             "scenarios": [
-            {
-                "condition": "runDelayAdvisory",
-                "steps":[
                 {
-                    "type": "text",
-                    "data": { "name": "place-holder" }
+                    "condition": "runDelayAdvisory",
+                    "steps": [
+                        {
+                            "type": "handler",
+                            "data": {
+                                "name": "placeholder",
+                                "text": "Following cascaded interim handling related to the advisory."
+                            }
+                        }
+                    ]
                 }
-                ]       
-            }
             ]
-    }
-  ]
-
+        },
+        {
+            "id": "paperless",
+            "type": "handler",
+            "data": {
+                "name": "genieSimulator",
+                "output": "paperless"
+            },
+            "scenarios": [
+                {
+                    "condition": "!paperless",
+                    "steps": [
+                        {
+                            "id": "correctBillAddress",
+                            "type": "handler",
+                            "data": {
+                                "name": "genieSimulator",
+                                "output": "correctBillAddress"
+                            },
+                            "scenarios": [
+                                {
+                                    "condition": "correctBillAddress",
+                                    "steps": [
+                                        {
+                                            "id": "paperSLA",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "genieSimulator",
+                                                "output": "paperSLA"                                                
+                                            },
+                                            "scenarios": [
+                                                {
+                                                    "condition": "paperSLA",
+                                                    "steps": [
+                                                        {
+                                                            "id": "offerPaperlessSLA",
+                                                            "type": "prompt",
+                                                            "data": {
+                                                                "text": "Mr./Ms. __________________, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
+                                                                "type":"confirm"
+                                                            },
+                                                            "scenarios": [
+                                                                {
+                                                                    "condition": "offerPaperlessSLA",
+                                                                    "steps": [
+                                                                        {
+                                                                            "id": "enrollPaperlessSLA",
+                                                                            "type": "handler",
+                                                                            "data": {
+                                                                                "name": "placeholder",
+                                                                                "text": "You have been enrolled in paperless billing."
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "condition": "!paperSLA",
+                                                    "steps": [
+                                                        {
+                                                            "id": "appologyScript",
+                                                            "type": "text",
+                                                            "data": {
+                                                                "text": "Mr./Ms. __________________, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
+                                                            }
+                                                        },
+                                                        {
+                                                            "id": "offerPaperless",
+                                                            "type": "prompt",
+                                                            "data": {
+                                                                "text": "Mr./Ms. ____________________, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
+                                                                "type":"confirm"
+                                                            },
+                                                            "scenarios": [
+                                                                {
+                                                                    "condition": "offerPaperless",
+                                                                    "steps": [
+                                                                        {
+                                                                            "id": "enrollPaperless",
+                                                                            "type": "handler",
+                                                                            "data": {
+                                                                                "name": "placeholder",
+                                                                                "text": "You have been enrolled in paperless billing."
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "condition": "!offerPaperless",
+                                                                    "steps": [
+                                                                        {
+                                                                            "id": "dispatchDeliveryValCase",
+                                                                            "type": "handler",
+                                                                            "data": {
+                                                                                "name": "placeholder",
+                                                                                "text": "Dispatching a case for validating bill delivery and bill resending"
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "condition": "!correctBillAddress",
+                                    "steps": [
+                                        {
+                                            "id": "getCorrectAddress",
+                                            "type": "prompt",
+                                            "data": {
+                                                "text": "It seems the billing address on record is incorrect? Can you provide me with you current address?"
+                                            }
+                                        },
+                                        {
+                                            "id": "changeAddressAndHandling",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "input": "getCorrectAddress",
+                                                "text": "Updated your address in our records. We are resending your Billing Statment. Thank you!"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "condition": "paperless",
+                    "steps":[
+                        {
+                            "id": "correctEmailAddress",
+                            "type": "handler",
+                            "data": {
+                                "name": "genieSimulator",
+                                "output": "correctEmailAddress"
+                            },
+                            "scenarios": [
+                                {
+                                    "condition":"correctEmailAddress",
+                                    "steps":[
+                                        {
+                                            "id": "emailSLA",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "genieSimulator",
+                                                "output": "emailSLA"
+                                            },
+                                            "scenarios":[
+                                                {
+                                                    "condition":"emailSLA",
+                                                    "steps":[
+                                                        {
+                                                            "type":"text",
+                                                            "data":{
+                                                                "text":"Your bill will be sent to your registered email address"
+                                                            }
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "condition":"!emailSLA",
+                                                    "steps":[
+                                                        {
+                                                            "type":"text",
+                                                            "data":{
+                                                                "text":"Mr./Ms. __________________, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "condition":"!correctEmailAddress",
+                                    "steps": [
+                                        {
+                                            "id": "getCorrectEmailAddress",
+                                            "type": "prompt",
+                                            "data": {
+                                                "text": "It seems the email address on record is incorrect? Can you provide me with you current address?"
+                                            }
+                                        },
+                                        {
+                                            "id": "changeAddressAndHandling",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "input": "getCorrectAddress",
+                                                "text": "Updated your email in our records. We are resending your Billing Statment. Thank you!"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "billReprint",
+            "type": "prompt",
+            "data": {
+                "text": "So you may also view your bill in advance, I will be emailing a copy of the same bill to your registered email address. Okay?",
+                "type":"confirm"
+            },
+            "scenarios": [
+                {
+                    "condition": "billReprint",
+                    "steps": [
+                        {
+                            "type": "handler",
+                            "data": {
+                                "name": "placeholder",
+                                "text": "Resending Your Billing Statment. Thank you!"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "condition": "billReprint",
+                    "steps": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "text": "Did you know that you can register to MyBills online to view your billing statement while waiting for the copy of your bill?"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

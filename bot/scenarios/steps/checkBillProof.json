@@ -1,11 +1,11 @@
 {
 "id": "checkBillProof",
 "type": "handler",
-    "data": { "name": "checkBillProof", "input": "billNumber", "output": "deliveryStatus" },
+    "data": { "name": "checkBillProofSimulator", "input": "billNumber", "output": "deliveryStatus" },
     "scenarios": [
     {
         "condition": "deliveryStatus == 'NoRecordFound'",
-        "nodeID": "noStatusRecordsFound"        
+        "nodeId": "noStatusRecordsFound"        
     },
     {
         "condition": "deliveryStatus == 'RTS'",
