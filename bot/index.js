@@ -18,9 +18,9 @@ module.exports = connector;
 
 bot.dialog('/', intents);
 
-intents.matches(/^(help|hi|hello|hey)/i, [
+intents.matches(/^(help|hi|hello)/i, [
   function (session) {
-    session.send('Hi, I am your customer service bot! How are you today?');
+    session.send('Hi, how can I help you?');
   }
 ]);
 
@@ -29,7 +29,7 @@ intents.matches(/^(help|hi|hello|hey)/i, [
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-var routerGraph = require('./scenarios/amdocs-ari.json');
+var routerGraph = require('./scenarios/router.json');
 var routerGraphDialog = new BotGraphDialog({tree: routerGraph, scenariosPath, handlersPath});
 intents.onDefault(routerGraphDialog.getSteps());
 

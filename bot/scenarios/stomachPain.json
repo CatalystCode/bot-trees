@@ -13,7 +13,7 @@
       "data": { "type": "time", "text": "When did it start?" }
     },
     {
-      "subScenario": "steps/smoking"
+      "subScenario": "smoking"
     },
     {
       "id": "workout",
@@ -109,7 +109,7 @@
             {
               "id": "kfYears",
               "type": "prompt",
-              "data": { "type":"number", "text": "How many years have you been practicing?" }
+              "data": { "type":"number", "text": "How many years have you neen practicing?" }
             }
           ]
         }
