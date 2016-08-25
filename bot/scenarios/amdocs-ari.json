@@ -1,0 +1,26 @@
+{
+  "id": "amdocs",
+  "type": "sequence",
+  "steps": [
+    {    
+      "id":"firstTime",
+      "subScenario": "steps/firstTime"
+    },
+    {      
+        "id": "billNumber",
+        "type": "prompt",
+        "data": { 
+            "type":"number", "text":"What is the bill number being complained for non-receipt?" 
+        }
+    },
+    {    
+        "id":"checkBillProof",
+        "subScenario": "steps/checkBillProof"
+    },
+    {
+        "id":"noStatusRecordsFound",
+        "subScenario": "steps/noStatusRecordsFound"
+    }
+  ],
+  "models": []
+}

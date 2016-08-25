@@ -13,7 +13,7 @@
       "data": { "type": "time", "text": "When did it start?" }
     },
     {
-      "subScenario": "steps/smoking"
+      "subScenario": "smoking"
     },
     {
       "id": "workout",

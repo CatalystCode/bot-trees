@@ -1,0 +1,38 @@
+{
+"id": "checkBillProof",
+"type": "handler",
+    "data": { "name": "checkBillProof", "input": "billNumber", "output": "deliveryStatus" },
+    "scenarios": [
+    {
+        "condition": "deliveryStatus == 'NoRecordFound'",
+        "nodeID": "noStatusRecordsFound"        
+    },
+    {
+        "condition": "deliveryStatus == 'RTS'",
+        "steps":[
+            {
+                "type": "text",
+                "data": { "text": "step 5 Id..." }
+            }
+        ]
+    },
+    {
+        "condition": "deliveryStatus == 'Disclaimed'",
+        "steps":[
+        {
+            "type": "text",
+            "data": { "text": "step 6 Id..." }
+        }
+        ]    
+    },
+    {
+        "condition": "deliveryStatus == 'TreatedAsSPAM'",
+        "steps":[
+        {
+            "type": "text",
+            "data": { "text": "step 7 Id..." }
+        }
+        ]
+    }
+    ]    
+}

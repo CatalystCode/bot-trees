@@ -1,0 +1,22 @@
+{
+"id": "noStatusRecordsFound",
+"type": "sequence",
+"steps": [
+    { 
+        "type": "handler",
+            "data": { "name": "genieSimulator", "output": "runDelayAdvisory" },
+            "scenarios": [
+            {
+                "condition": "runDelayAdvisory",
+                "steps":[
+                {
+                    "type": "text",
+                    "data": { "name": "place-holder" }
+                }
+                ]       
+            }
+            ]
+    }
+  ]
+
+}

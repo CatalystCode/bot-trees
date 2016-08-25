@@ -1,0 +1,45 @@
+{
+    "id": "firstTime",
+    "type": "prompt",
+    "data": {
+    "text": "Is this the first time you are calling regarding this concern?",
+    "type":"confirm"
+    },
+    "scenarios": [
+    {
+        "condition": "!firstTime",
+        "steps": [
+        {
+            "id": "oldReference",
+            "type": "prompt",
+            "data": { "text": "What is the reference number of the previous call? (Or type 'None')" },
+            "scenarios": [
+            {
+                "condition": "oldReference != 'None'",
+                "steps": [
+                {
+                    "type": "handler",
+                    "data": { "name": "encodeMyAdmin", "input": "oldReference" }
+                }
+                ]
+            },
+            {
+                "condition": "oldReference == 'None'",
+                "nodeId": "authenticate"
+            }
+            ]
+        }
+        ]
+    },
+    {
+        "condition": "firstTime",
+        "steps": [
+        {
+            "id": "authenticate",
+            "type": "handler",
+            "data": { "name": "authenticate" }
+        }
+        ]
+    }
+]
+}
