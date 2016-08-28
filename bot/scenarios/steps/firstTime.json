@@ -2,44 +2,60 @@
     "id": "firstTime",
     "type": "prompt",
     "data": {
-    "text": "Is this the first time you are calling regarding this concern?",
-    "type":"confirm"
+        "text": "Is this the first time you are calling regarding this concern?",
+        "type": "confirm"
     },
     "scenarios": [
-    {
-        "condition": "!firstTime",
-        "steps": [
         {
-            "id": "oldReference",
-            "type": "prompt",
-            "data": { "text": "What is the reference number of the previous call? (Or type 'None')" },
-            "scenarios": [
-            {
-                "condition": "oldReference != 'None'",
-                "steps": [
+            "condition": "!firstTime",
+            "steps": [
                 {
-                    "type": "handler",
-                    "data": { "name": "placeholder", "input": "oldReference" ,"text":"encoding in My Admin Tool and the status is 'pending investigation'"}
+                    "id": "oldReference",
+                    "type": "prompt",
+                    "data": {
+                        "text": "What is the reference number of the previous call? (Or type 'None')"
+                    },
+                    "scenarios": [
+                        {
+                            "condition": "oldReference != 'None'",
+                            "steps": [
+                                {
+                                    "type": "handler",
+                                    "data": {
+                                        "name": "placeholder",
+                                        "input": "oldReference",
+                                        "text": "encoding in My Admin Tool and the status is 'pending investigation'"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "condition": "oldReference == 'None'",
+                            "nodeId": "authenticate"
+                        }
+                    ]
                 }
-                ]
-            },
-            {
-                "condition": "oldReference == 'None'",
-                "nodeId": "authenticate"
-            }
+            ]
+        },
+        {
+            "condition": "firstTime",
+            "steps": [
+                {
+                    "id": "authenticate",
+                    "type": "handler",
+                    "data": {
+                        "name": "placeholder",
+                        "text": "Authenticating ..."
+                    }
+                },
+                {
+                    "id": "authenticated",
+                    "type": "text",
+                    "data": {
+                        "text": "Authentication Confirmed, Welcome {user}"
+                    }
+                }
             ]
         }
-        ]
-    },
-    {
-        "condition": "firstTime",
-        "steps": [
-        {
-            "id": "authenticate",
-            "type": "handler",
-            "data": { "name": "placeholder", "text":"Authentication Confirmed: Welcome Mr.Smith" }
-        }
-        ]
-    }
-]
+    ]
 }

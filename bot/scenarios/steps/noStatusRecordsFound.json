@@ -3,7 +3,7 @@
     "type": "sequence",
     "steps": [
         {
-            "id": "rundelay",
+            "id": "NSRFrundelay",
             "type": "handler",
             "data": {
                 "name": "genieSimulator",
@@ -25,7 +25,7 @@
             ]
         },
         {
-            "id": "paperless",
+            "id": "NSRFpaperless",
             "type": "handler",
             "data": {
                 "name": "genieSimulator",
@@ -36,7 +36,7 @@
                     "condition": "!paperless",
                     "steps": [
                         {
-                            "id": "correctBillAddress",
+                            "id": "NSRFcorrectBillAddress",
                             "type": "handler",
                             "data": {
                                 "name": "genieSimulator",
@@ -47,7 +47,7 @@
                                     "condition": "correctBillAddress",
                                     "steps": [
                                         {
-                                            "id": "paperSLA",
+                                            "id": "NSRFpaperSLA",
                                             "type": "handler",
                                             "data": {
                                                 "name": "genieSimulator",
@@ -58,10 +58,10 @@
                                                     "condition": "paperSLA",
                                                     "steps": [
                                                         {
-                                                            "id": "offerPaperlessSLA",
+                                                            "id": "NSRFofferPaperlessSLA",
                                                             "type": "prompt",
                                                             "data": {
-                                                                "text": "Mr./Ms. __________________, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
+                                                                "text": "Mr.Mccarthy, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
                                                                 "type":"confirm"
                                                             },
                                                             "scenarios": [
@@ -69,7 +69,7 @@
                                                                     "condition": "offerPaperlessSLA",
                                                                     "steps": [
                                                                         {
-                                                                            "id": "enrollPaperlessSLA",
+                                                                            "id": "NSRFenrollPaperlessSLA",
                                                                             "type": "handler",
                                                                             "data": {
                                                                                 "name": "placeholder",
@@ -86,17 +86,17 @@
                                                     "condition": "!paperSLA",
                                                     "steps": [
                                                         {
-                                                            "id": "appologyScript",
+                                                            "id": "NSRFappologyScript",
                                                             "type": "text",
                                                             "data": {
-                                                                "text": "Mr./Ms. __________________, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
+                                                                "text": "Mr.Mccarthy, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
                                                             }
                                                         },
                                                         {
-                                                            "id": "offerPaperless",
+                                                            "id": "NSRFofferPaperless",
                                                             "type": "prompt",
                                                             "data": {
-                                                                "text": "Mr./Ms. ____________________, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
+                                                                "text": "Mr.Mccarthy, your latest bill is on its way. Please wait for the delivery of your billing statement within xx (9 days for NCR or 11 days for provincial) days. For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving bills through email or accessing it online instead of receiving the printed copies via mail. Would you want me to enroll your account to paperless billing now?",
                                                                 "type":"confirm"
                                                             },
                                                             "scenarios": [
@@ -104,7 +104,7 @@
                                                                     "condition": "offerPaperless",
                                                                     "steps": [
                                                                         {
-                                                                            "id": "enrollPaperless",
+                                                                            "id": "NSRFenrollPaperless",
                                                                             "type": "handler",
                                                                             "data": {
                                                                                 "name": "placeholder",
@@ -117,7 +117,7 @@
                                                                     "condition": "!offerPaperless",
                                                                     "steps": [
                                                                         {
-                                                                            "id": "dispatchDeliveryValCase",
+                                                                            "id": "NSRFdispatchDeliveryValCase",
                                                                             "type": "handler",
                                                                             "data": {
                                                                                 "name": "placeholder",
@@ -138,18 +138,18 @@
                                     "condition": "!correctBillAddress",
                                     "steps": [
                                         {
-                                            "id": "getCorrectAddress",
+                                            "id": "NSRFgetCorrectAddress",
                                             "type": "prompt",
                                             "data": {
                                                 "text": "It seems the billing address on record is incorrect? Can you provide me with you current address?"
                                             }
                                         },
                                         {
-                                            "id": "changeAddressAndHandling",
+                                            "id": "NSRFchangeAddressAndHandling",
                                             "type": "handler",
                                             "data": {
                                                 "name": "placeholder",
-                                                "input": "getCorrectAddress",
+                                                "input": "NSRFgetCorrectAddress",
                                                 "text": "Updated your address in our records. We are resending your Billing Statment. Thank you!"
                                             }
                                         }
@@ -163,7 +163,7 @@
                     "condition": "paperless",
                     "steps":[
                         {
-                            "id": "correctEmailAddress",
+                            "id": "NSRFcorrectEmailAddress",
                             "type": "handler",
                             "data": {
                                 "name": "genieSimulator",
@@ -174,7 +174,7 @@
                                     "condition":"correctEmailAddress",
                                     "steps":[
                                         {
-                                            "id": "emailSLA",
+                                            "id": "NSRFemailSLA",
                                             "type": "handler",
                                             "data": {
                                                 "name": "genieSimulator",
@@ -198,7 +198,7 @@
                                                         {
                                                             "type":"text",
                                                             "data":{
-                                                                "text":"Mr./Ms. __________________, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
+                                                                "text":"Mr./Ms.Mr.Mccarthy, we apologize for this inconvenience. Be assured that we will determine the cause of this service gaps on bill delivery. If we find out that the assigned messenger is not doing his duties, we will implement corrective action to prevent this from happening again. Thank you for reporting the performance of the courier."
                                                             }
                                                         }
                                                     ]
@@ -211,18 +211,18 @@
                                     "condition":"!correctEmailAddress",
                                     "steps": [
                                         {
-                                            "id": "getCorrectEmailAddress",
+                                            "id": "NSRFgetCorrectEmailAddress",
                                             "type": "prompt",
                                             "data": {
                                                 "text": "It seems the email address on record is incorrect? Can you provide me with you current address?"
                                             }
                                         },
                                         {
-                                            "id": "changeAddressAndHandling",
+                                            "id": "NSRFchangeAddressAndHandling",
                                             "type": "handler",
                                             "data": {
                                                 "name": "placeholder",
-                                                "input": "getCorrectAddress",
+                                                "input": "NSRFgetCorrectAddress",
                                                 "text": "Updated your email in our records. We are resending your Billing Statment. Thank you!"
                                             }
                                         }
@@ -235,7 +235,7 @@
             ]
         },
         {
-            "id": "billReprint",
+            "id": "NSRFbillReprint",
             "type": "prompt",
             "data": {
                 "text": "So you may also view your bill in advance, I will be emailing a copy of the same bill to your registered email address. Okay?",

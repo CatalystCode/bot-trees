@@ -1,0 +1,180 @@
+{
+    "id": "rts",
+    "type": "sequence",
+    "steps": [
+        {
+            "id": "RTSadviseRecord",
+            "type": "text",
+            "data": {
+                "text": "Please be advised of the following bill proof record"
+            }
+        },
+        {
+            "id": "RTSpaperless",
+            "type": "handler",
+            "data": {
+                "name": "genieSimulator",
+                "output": "paperless"
+            },
+            "scenarios": [
+                {
+                    "condition": "!paperless",
+                    "steps": [
+                        {
+                            "id": "RTScorrectBillAddress",
+                            "type": "prompt",
+                            "data": {
+                                "text": "Mr.Mccarthy, Our records show that your bill was returned to us. Please confirm if your delivery address still at {userAddress}. Is this correct?",
+                                "type": "confirm"
+                            },
+                            "scenarios": [
+                                {
+                                    "condition": "RTScorrectBillAddress",
+                                    "steps": [
+                                        {
+                                            "id": "RTSlandmark",
+                                            "type": "prompt",
+                                            "data": {
+                                                "text": "Kindly provide us a landmark or establishment nearest your area."
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "condition": "!RTScorrectBillAddress",
+                                    "steps": [
+                                        {
+                                            "id": "RTSupdateBillAddress",
+                                            "type": "prompt",
+                                            "data": {
+                                                "text": "Can I get your updated billing address so that I can update our records?"
+                                            }
+                                        },
+                                        {
+                                            "id": "RTSupdateAddressAndResend",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "text": "Your address has been updated in our records and we have resent your bill."
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "RTSofferPaperless",
+                            "type": "prompt",
+                            "data": {
+                                "text": "For a timely view of your billing statement, you may want to switch to paperless billing. It gives you the convenience of receiving your bills through email or accessing it online instead of receiving printed copies via mail. Would you want me to enroll your account to paperless billing now?",
+                                "type": "confirm"
+                            },
+                            "scenarios": [
+                                {
+                                    "condition": "RTSofferPaperless",
+                                    "steps": [
+                                        {
+                                            "id": "RTSenrollPaperlessSLA",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "text": "You have been enrolled in paperless billing."
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "condition": "!RTSofferPaperless",
+                                    "steps": [
+                                        {
+                                            "id": "RTSdispatchDeliveryValCase",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "text": "Dispatching a case for validating bill delivery and bill resending"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "condition": "paperless",
+                    "steps": [
+                        {
+                            "id": "RTScorrectEmailAddress",
+                            "type": "prompt",
+                            "data": {
+                                "text": "Mr.Mccarthy, Our records show that your bill was returned to us due to [reason for RTS]. Please confirm if your delivery address still at {userEmail}. Is this correct?",
+                                "type": "confirm"
+                            },
+                            "scenarios": [
+                                {
+                                    "condition": "!RTScorrectEmailAddress",
+                                    "steps": [
+                                        {
+                                            "id": "RTSnewEmail",
+                                            "type": "prompt",
+                                            "data": {
+                                                "text": "Can I get your correct email address so that I can update our records?"
+                                            }
+                                        },
+                                        {
+                                            "id": "RTSupdateEmail",
+                                            "type": "handler",
+                                            "data": {
+                                                "name": "placeholder",
+                                                "input": "RTSnewEmail",
+                                                "text": "Your email address has been updated in our records."
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "RTSofferBillByEmail",
+            "type": "prompt",
+            "data": {
+                "text": "So you may also view your bill in advance, I will be emailing a copy of the same bill to your registered email address. Okay?",
+                "type": "confirm",
+                "scenarios": [
+                    {
+                        "condition": "RTSofferBillByEmail",
+                        "steps": [
+                            {
+                                "id": "RTSemailForBill",
+                                "type": "prompt",
+                                "data": {
+                                    "text": "Great where would you like me to send that"
+                                }
+                            },
+                            {
+                                "id": "RTSemailBillHandling",
+                                "type": "handler",
+                                "data": {
+                                    "name": "placeholder",
+                                    "input": "RTSemailForBill",
+                                    "text": "We have sent you your billing statment, Thank you!"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "id": "RTSregisterReminder",
+                        "type": "text",
+                        "data": {
+                            "text": "As an added option, we encourage you to view your bills online. Once you register, this option enables you to view and print your 12 most recent bills at no cost, anytime. It's FREE if you go online and register your account."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

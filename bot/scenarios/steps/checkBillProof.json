@@ -5,14 +5,19 @@
     "scenarios": [
     {
         "condition": "deliveryStatus == 'NoRecordFound'",
-        "nodeId": "noStatusRecordsFound"        
+         "steps":[
+            {
+                "id":"goToRTS",
+                "subScenario": "steps/noStatusRecordsFound"
+            }
+        ]
     },
     {
         "condition": "deliveryStatus == 'RTS'",
         "steps":[
             {
-                "type": "text",
-                "data": { "text": "step 5 Id..." }
+                "id":"goToRTS",
+                "subScenario": "steps/RTS"
             }
         ]
     },

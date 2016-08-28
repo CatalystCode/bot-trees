@@ -1,0 +1,38 @@
+Step 4 Flow
+
+
+    Check Bill Delivery Mode:
+        Paper:
+            -Advise customer of record in Bill Proof 
+
+            Check if billing address is correct:
+                Billing Address Correct:
+                   -Deliver script: "Kindly provide us a landmark or establishment nearest your area."
+                   -Jump to Propose Paperless billing
+
+                Billing Address Incorrect:
+                   -Deliver script: "Can I get your updated billing address so that I can update our records?"
+                   -Update the billing arrangement. 
+                   -Once billing address has been updated,dispatch a case for bill resending to correct email address.
+
+        Paperless:
+            -Advise customer of record in Bill Proof 
+            Check if email address is correct                 
+                If Email address Correct:
+                   -Jump to Offer sending bills via email                 
+                If Email Incorrect:
+                    -Ask for the updated email address
+                    -Change the email address
+                    -Jump to Offer sending bills via email
+
+    Propose Paperless Billing:
+        If customer agrees:
+            Enroll in paperless billing 
+        Else :
+            Dispatch a case for validating bill delivery and resending of the billing statement
+
+    Offer sending of bills via Email:
+        If customer agrees:
+            Get his preferred email address where to send the bill and proceed with resending billing statement
+        If declines
+            Remind him to register to MyBills online so he can view his billing statement while waiting for the copy of the bill.

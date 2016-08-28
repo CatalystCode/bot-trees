@@ -1,0 +1,26 @@
+{
+    "id": "profile",
+    "type": "sequence",
+    "steps": [
+        {
+            "id":"user",
+            "type":"const",
+            "value": "John"
+        },
+        {
+            "id":"lastname",
+            "type":"const",
+            "value": "Mccarthy"            
+        },
+        {
+            "id":"userEmail",
+            "type":"const",
+            "value": "jMccarthy@outlook.com"
+        },
+        {
+            "id":"userAddress",
+            "type":"const",
+            "value":"450 Serra Mall, Stanford, CA 94305"
+        }
+    ]
+}

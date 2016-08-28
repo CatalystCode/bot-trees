@@ -1,0 +1,2 @@
+ Add our billing address to his address book.
+    7.1.2. Disable auto­junk settings
