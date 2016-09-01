@@ -29,7 +29,7 @@ intents.matches(/^(help|hi|hello|hey)/i, [
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-var routerGraph = require('./scenarios/amdocs.json');
+var routerGraph = require('./scenarios/billing.json');
 var routerGraphDialog = new BotGraphDialog({tree: routerGraph, scenariosPath, handlersPath});
 intents.onDefault(routerGraphDialog.getSteps());
 
