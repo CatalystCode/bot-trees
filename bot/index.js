@@ -1,7 +1,10 @@
 var path = require('path');
 var builder = require('botbuilder');
 var BotGraphDialog = require('bot-graph-dialog');
+var GraphDialog = BotGraphDialog.GraphDialog;
+
 var config = require('../config');
+var fs = require('fs');
 
 var microsoft_app_id = config.get('MICROSOFT_APP_ID');
 var microsoft_app_password = config.get('MICROSOFT_APP_PASSWORD');
@@ -30,18 +33,29 @@ var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
 
-//var routerGraph = require('./scenarios/router.json');
-//var routerGraphDialog = new BotGraphDialog.GraphDialog( {parser: {scenario: 'router', scenariosPath, handlersPath}});
-var routerGraphDialog = new BotGraphDialog.GraphDialog( { parser: {scenario: 'router', loadJson: loadJson, handlersPath } } );
-routerGraphDialog.init().then(() => {
-  intents.onDefault(routerGraphDialog.getSteps());
-  console.log('graph dialog loaded successfully');
-});
+// get a GraphDialog instance from a scenario asynchronously
+// when ready, attach the steps to the relevant intent dialog
+// provide 2 callbacks (loadScenario and loadHandler) that returns a Promise 
+// for loading scenario json and handlers from an external data source-
+// this can be from a file (as demonstrated below), a storage, etc.
+GraphDialog
+  .fromScenario( { 
+      scenario: 'router', 
+      loadScenario: loadScenario, 
+      loadHandler: loadHandler 
+    })
+  .then(graphDialog => {
+    intents.onDefault(graphDialog.getSteps());
+    console.log('graph dialog loaded successfully');
+  });
 
-function loadJson(scenario) {
-  return new Promise(function(resolve, reject) {
+// this is the handler for loading scenarios from external datasource
+// in this implementation we're just reading it from a file
+// but it can come from any external datasource like a file, db, etc.
+function loadScenario(scenario) {
+  return new Promise((resolve, reject) => {
     console.log('loading scenario', scenario);
-    // implement loadJson from external datasource.
+    // implement loadScenario from external datasource.
     // in this example we're loading from local file
     var scenarioPath = path.join(scenariosPath, scenario);
     var scenarioObj = null;
@@ -50,9 +64,9 @@ function loadJson(scenario) {
     }
     catch (err) {
         console.error("error loading json: " + scenarioPath);
-        throw err;
+        reject(err);
     }
-
+    // simulating long load period
     setTimeout(function() {
       console.log('resolving scenario', scenario);
       resolve(scenarioObj);
@@ -60,43 +74,29 @@ function loadJson(scenario) {
   });
 }
 
-
-/*
-var b = new BotGraphDialog.Builder();
-
-var nav = b
-  .text().text('hi! welcome to the graph dialog scenario!').end()
-  .prompt('smokingId').text('are you smoking?').varname('smoking')
-    .condition().if('smoking == "yes').steps(b
-      .text().text('i\'m going to ask you a few questions regarding you smoking...').end()
-      .prompt().text('for how many years?').varname('yearsSmoking').end()
-      .prompt().text('how many cigaretts a day?').varname('numPerDay').end()
-    ).end() /* condition */
-/*    .condition().if('smoking == "no"').steps(b
-      .prompt().text('are you sure?').varname('smokingSure')
-        .condition().if('smokingSure == "no').jump('smokingId').end()
-    ).end() /* condition */ /*.end() /* prompt */
-/*  .prompt().text('do you have fever?').varname('fever').end()    
-  .navigator();
-
-// currently intents.onDefault gets IDialogWaterfallStep[],
-// long term I hope to be able to add INavigator to the options of possible types to send to the onDefault() API
-// or any other API that gets  IDialogWaterfallStep[], and that internally the bot fw will call navigator.getNext(): IDialogWaterfallStep
-// to get the next step: intents.onDefault(<INavigator>nav);
-intents.onDefault(nav.getSteps());
-*/
-
-
-
-
-
-
-
-//var routerGraphDialog = new BotGraphDialog.GraphDialog( {parser: {scenario: 'router', scenariosPath, handlersPath}});
-//intents.onDefault(routerGraphDialog.getSteps());
-
-//.textNode('id1', {text: 'hey! what do you think?', varname: 'q3'}).end()
-
-
-// ============================================
+// this is the handler for loading handlers from external datasource
+// in this implementation we're just reading it from a file
+// but it can come from any external datasource like a file, db, etc.
+//
+// NOTE:  handlers can also be embeded in the scenario json. See scenarios/botGames.json for an example.
+function loadHandler(handler) {
+  return new Promise((resolve, reject) => {
+    console.log('loading handler', handler);
+    // implement loadHandler from external datasource.
+    // in this example we're loading from local file
+    var handlerPath = path.join(handlersPath, handler);
+    var handlerString = null;
+    return fs.readFile(handlerPath, 'utf8', function(err, content) {
+      if (err) {
+        console.error("error loading handler: " + handlerPath);
+        return reject(err);
+      }
+      // simulating long load period
+      setTimeout(function() {
+        console.log('resolving handler', handler);
+        resolve(content);
+      }, Math.random() * 3000);
+    });  
+  });
+}
 
