@@ -13,6 +13,11 @@
       "data": { "type": "time", "text": "When did it start?" }
     },
     {
+      "id": "customTypeStepDemo",
+      "type": "myCustomType",
+      "data": { "someData": "someData" }
+    },
+    {
       "subScenario": "smoking"
     },
     {

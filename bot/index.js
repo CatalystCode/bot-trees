@@ -40,14 +40,32 @@ var handlersPath = path.join(__dirname, 'handlers');
 // this can be from a file (as demonstrated below), a storage, etc.
 GraphDialog
   .fromScenario( { 
+      bot,
       scenario: 'router', 
-      loadScenario: loadScenario, 
-      loadHandler: loadHandler 
+      loadScenario, 
+      loadHandler,
+
+      // this allows you to extend the json with more custom node types, 
+      // by providing your implementation to processing each custom type.
+      // in the end of your implemention you should call the next callbacks
+      // to allow the framework to continue with the dialog.
+      // refer to the customTypeStepDemo node in the stomachPain.json scenario for an example.
+      customTypeHandlers: [
+        {
+          name: 'myCustomType',
+          execute: (session, next, data) => {
+            console.log(`in custom node type handler: customTypeStepDemo, data: ${data.someData}`);
+            return next();
+          }
+        }
+      ]
+
     })
   .then(graphDialog => {
-    intents.onDefault(graphDialog.getSteps());
+    intents.onDefault(graphDialog.getDialog());
     console.log('graph dialog loaded successfully');
-  });
+  })
+  .catch(err => { console.error(`error loading dialog`); });
 
 // this is the handler for loading scenarios from external datasource
 // in this implementation we're just reading it from a file
