@@ -75,20 +75,22 @@ function loadScenario(scenario) {
     console.log('loading scenario', scenario);
     // implement loadScenario from external datasource.
     // in this example we're loading from local file
-    var scenarioPath = path.join(scenariosPath, scenario);
-    var scenarioObj = null;
-    try {
-        scenarioObj = require(scenarioPath);
-    }
-    catch (err) {
+    var scenarioPath = path.join(scenariosPath, scenario + '.json');
+    
+    return fs.readFile(scenarioPath, 'utf8', function(err, content) {
+      if (err) {
         console.error("error loading json: " + scenarioPath);
-        reject(err);
-    }
-    // simulating long load period
-    setTimeout(function() {
-      console.log('resolving scenario', scenario);
-      resolve(scenarioObj);
-    }, Math.random() * 3000);
+        return reject(err);
+      }
+
+      var scenarioObj = JSON.parse(content);
+
+      // simulating long load period
+      setTimeout(function() {
+        console.log('resolving scenario', scenarioPath);
+        resolve(scenarioObj);
+      }, Math.random() * 3000);
+    });  
   });
 }
 
