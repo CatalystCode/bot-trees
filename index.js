@@ -36,8 +36,14 @@ function startBot() {
   
   var app = express();
   
-  var botConnector = require('./bot');
-  app.post('/api/messages', botConnector.listen());
+  var bot = require('./bot');
+  app.post('/api/messages', bot.connector.listen());
+
+  app.get('/dialog/reload', (req, res) => {
+    bot.reload()
+      .then(() => res.end('reloaded successfully'))
+      .catch(err => res.end('error loading: ${err.message}'));
+  });
 
   app.listen(port, function () {
     console.log('listening on port %s', port);

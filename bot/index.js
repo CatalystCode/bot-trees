@@ -17,7 +17,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 var intents = new builder.IntentDialog();     
 
-module.exports = connector;
+module.exports.connector = connector;
 
 bot.dialog('/', intents);
 
@@ -32,6 +32,7 @@ intents.matches(/^(help|hi|hello)/i, [
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
+var graphDialogObj = null;
 
 // get a GraphDialog instance from a scenario asynchronously
 // when ready, attach the steps to the relevant intent dialog
@@ -62,6 +63,7 @@ GraphDialog
 
     })
   .then(graphDialog => {
+    graphDialogObj = graphDialog;
     intents.onDefault(graphDialog.getDialog());
     console.log('graph dialog loaded successfully');
   })
@@ -75,20 +77,22 @@ function loadScenario(scenario) {
     console.log('loading scenario', scenario);
     // implement loadScenario from external datasource.
     // in this example we're loading from local file
-    var scenarioPath = path.join(scenariosPath, scenario);
-    var scenarioObj = null;
-    try {
-        scenarioObj = require(scenarioPath);
-    }
-    catch (err) {
+    var scenarioPath = path.join(scenariosPath, scenario + '.json');
+    
+    return fs.readFile(scenarioPath, 'utf8', function(err, content) {
+      if (err) {
         console.error("error loading json: " + scenarioPath);
-        reject(err);
-    }
-    // simulating long load period
-    setTimeout(function() {
-      console.log('resolving scenario', scenario);
-      resolve(scenarioObj);
-    }, Math.random() * 3000);
+        return reject(err);
+      }
+
+      var scenarioObj = JSON.parse(content);
+
+      // simulating long load period
+      setTimeout(function() {
+        console.log('resolving scenario', scenarioPath);
+        resolve(scenarioObj);
+      }, Math.random() * 3000);
+    });  
   });
 }
 
@@ -118,3 +122,8 @@ function loadHandler(handler) {
   });
 }
 
+exports.reload = () => {
+  if (graphDialogObj)
+    return graphDialogObj.reload();
+  return Promise.reject('graph not loaded yet');
+}
