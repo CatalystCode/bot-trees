@@ -57,7 +57,7 @@ loadDialogs()
             customTypeHandlers: getCustomTypeHandlers()
           })
           .then(graphDialog => {
-            intents.onDefault(graphDialog.getDialog());
+           // intents.onDefault(graphDialog.getDialog());
             bot.dialog(dialogPath, graphDialog.getDialog());
             console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} for regExp: ${dialog.regex}`);
           })
