@@ -1,0 +1,19 @@
+{
+	"dialogs": [
+		{
+			"path": "stomachPain",
+			"regex": "^stomach",
+			"scenario": "stomachPain"
+		},
+		{
+			"path": "smoking",
+			"regex": "^(smoke|smoking)",
+			"scenario": "smoking"
+		},
+		{
+			"path": "botGames",
+			"regex": "^(bot|games|commands)",
+			"scenario": "botGames"
+		}
+	]
+}
