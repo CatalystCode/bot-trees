@@ -1,5 +1,5 @@
 # Bot Trees
-This is a sample bot app that uses the [bot-graph-dialog](https://github.com/CatalystCode/bot-graph-dialog) extension for dynamically load graph-based dialogs.
+This is a sample bot app that uses the [bot-graph-dialog](https://github.com/CatalystCode/bot-graph-dialog) extension for dynamically loading graph-based dialogs.
 Use this app as a reference for using the `bot-graph-dialog` extension.
 
 **Read more about the motivation for developing this extension [here](http://TODO-ADD-CASE-STUDY-LINK-WHEN-PUBLISHED)**
