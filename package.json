@@ -1,7 +1,7 @@
 {
   "name": "bot-trees",
   "version": "1.0.0",
-  "description": "bot tree generator",
+  "description": "A sample app for using the bot-graph-dialog node module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,8 +18,7 @@
   },
   "homepage": "https://github.com/CatalystCode/bot-trees#readme",
   "dependencies": {
-    "azure-logging": "^0.3.2",
-    "bot-graph-dialog": "git+https://git@github.com/CatalystCode/bot-graph-dialog.git",
+    "bot-graph-dialog": "3.2.3",
     "botbuilder": "3.2.3",
     "express": "^4.14.0",
     "extend": "^3.0.0",

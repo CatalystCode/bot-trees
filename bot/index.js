@@ -22,7 +22,6 @@ module.exports = connector;
 var scenariosPath = path.join(__dirname, 'scenarios');
 var handlersPath = path.join(__dirname, 'handlers');
 
-
 bot.dialog('/', intents);
 
 intents.matches(/^(help|hi|hello)/i, [
@@ -57,7 +56,6 @@ loadDialogs()
             customTypeHandlers: getCustomTypeHandlers()
           })
           .then(graphDialog => {
-           // intents.onDefault(graphDialog.getDialog());
             bot.dialog(dialogPath, graphDialog.getDialog());
             console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} for regExp: ${dialog.regex}`);
           })
@@ -66,28 +64,6 @@ loadDialogs()
     }
   })
   .catch(err => console.error(`error loading dialogs dynamically: ${err.message}`));
-
-/*
-// get a GraphDialog instance from a scenario asynchronously
-// when ready, attach the steps to the relevant intent dialog
-// provide 2 callbacks (loadScenario and loadHandler) that returns a Promise 
-// for loading scenario json and handlers from an external data source-
-// this can be from a file (as demonstrated below), a storage, etc.
-GraphDialog
-  .fromScenario({ 
-      bot,
-      scenario: 'router', 
-      loadScenario, 
-      loadHandler,
-      customTypeHandlers: getCustomTypeHandlers()
-    })
-  .then(graphDialog => {
-    intents.onDefault(graphDialog.getDialog());
-    console.log('graph dialog loaded successfully');
-  })
-  .catch(err => { console.error(`error loading dialog`); });
-*/
-
 
 // this allows you to extend the json with more custom node types, 
 // by providing your implementation to processing each custom type.
