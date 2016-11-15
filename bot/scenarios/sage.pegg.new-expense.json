@@ -1,0 +1,59 @@
+{
+  "id": "sage.pegg.new-expense",
+  "type": "sequence",
+  "steps": [
+    {
+      "type": "handler",
+      "data": { "name": "save-expense-data.js" }
+    },
+    {
+      "type": "sequence",
+      "scenarios": [
+        {
+          "condition": "!expense.amount",
+          "steps": [
+            {
+              "id": "expense.amount",
+              "type": "prompt",
+              "data": { "type": "text", "text": "How much did you pay?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sequence",
+      "scenarios": [
+        {
+          "condition": "!expense.time",
+          "steps": [
+            {
+              "id": "expense.time",
+              "type": "prompt",
+              "data": { "type": "time", "text": "When did you spend it?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sequence",
+      "scenarios": [
+        {
+          "condition": "!expense.item",
+          "steps": [
+            {
+              "id": "expense.item",
+              "type": "prompt",
+              "data": { "type": "text", "text": "What was it for?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "data": { "text": "Thank you!" }
+    }
+  ]  
+}
