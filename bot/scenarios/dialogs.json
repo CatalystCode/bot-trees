@@ -19,6 +19,11 @@
 			"path": "pegg",
 			"regex": "^(sage|pegg)",
 			"scenario": "sage.pegg.router"
+		},
+		{
+			"path": "validations",
+			"regex": "^(validation|carousel)",
+			"scenario": "validationsAndCarousels"
 		}
 	]
 }
