@@ -1,0 +1,56 @@
+{
+  "id": "sage.pegg.new-income",
+  "type": "sequence",
+  "steps": [
+    {
+      "type": "handler",
+      "data": { "name": "save-income-data.js" }
+    },
+    {
+      "scenarios": [
+        {
+          "condition": "!expense.amount",
+          "steps": [
+            {
+              "id": "expanse.amount",
+              "type": "prompt",
+              "data": { "type": "text", "text": "How much did you pay?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenarios": [
+        {
+          "condition": "!expense.time",
+          "steps": [
+            {
+              "id": "expanse.time",
+              "type": "prompt",
+              "data": { "type": "date", "text": "When did you spend it?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenarios": [
+        {
+          "condition": "!expense.item",
+          "steps": [
+            {
+              "id": "expanse.item",
+              "type": "prompt",
+              "data": { "type": "text", "text": "What was it for?" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "data": { "text": "Thank you!" }
+    }
+  ]  
+}

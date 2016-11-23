@@ -13,6 +13,11 @@
       "data": { "type": "time", "text": "When did it start?" }
     },
     {
+      "id": "customTypeStepDemo",
+      "type": "myCustomType",
+      "data": { "someData": "someData" }
+    },
+    {
       "subScenario": "smoking"
     },
     {
@@ -21,7 +26,10 @@
       "data": { 
         "type": "choice",
         "text": "What kind of workout do you do?",
-        "options":  [ "None", "Crossfit", "TRX", "Kung-Fu" ]
+        "options":  [ "None", "Crossfit", "TRX", "Kung-Fu" ],
+        "config": {
+          "listStyle": "button"
+        }
       },
       "varname": "workout",
       "scenarios": [
@@ -122,7 +130,7 @@
     {
       "id": "finalize",
       "type": "handler",
-      "data": { "name": "summary" }
+      "data": { "name": "summary.js" }
     }
   ]  
 }

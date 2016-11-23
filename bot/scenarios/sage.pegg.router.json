@@ -1,0 +1,34 @@
+{
+  "id": "sage.pegg.router",
+  "type": "sequence",
+  "steps": [
+    {
+      "id": "userIntent",
+      "type": "prompt",
+      "data": { "text": "What do you want to do?" }
+    },
+    {
+      "id": "scoredIntent",
+      "type": "score",
+      "data": { 
+        "models": [ "sage-router" ]
+      },
+      "scenarios": [
+        {
+          "condition": "scoredIntent.intent == 'sage.new-expense'",
+          "steps": [ { "subScenario": "sage.pegg.new-expense" } ]
+        },
+        {
+          "condition": "scoredIntent.intent == 'sage.new-income'",
+          "steps": [ { "subScenario": "sage.pegg.new-income" } ]
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "name": "sage-router",
+      "url": "https://api.projectoxford.ai/luis/v1/application?id=65f369d0-f62b-43d9-ac7d-d02404262d76&subscription-key=a7454fa784574b44b9018ce35fcceda8&q="
+    }
+  ]
+}
