@@ -1,27 +1,27 @@
 {
 	"dialogs": [
-		{
-			"path": "stomachPain",
+	{
+			"path": "/stomachPain",
 			"regex": "^stomach",
 			"scenario": "stomachPain"
 		},
 		{
-			"path": "smoking",
+			"path": "/smoking",
 			"regex": "^(smoke|smoking)",
 			"scenario": "smoking"
 		},
 		{
-			"path": "botGames",
+			"path": "/botGames",
 			"regex": "^(bot|games|commands)",
 			"scenario": "botGames"
 		},
 		{
-			"path": "pegg",
+			"path": "/pegg",
 			"regex": "^(sage|pegg)",
 			"scenario": "sage.pegg.router"
 		},
 		{
-			"path": "validations",
+			"path": "/validations",
 			"regex": "^(validation|carousel)",
 			"scenario": "validationsAndCarousels"
 		}

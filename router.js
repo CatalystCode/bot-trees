@@ -31,39 +31,18 @@ intents.matches(/^(help|hi|hello)/i, [
   }
 ]);
 
-// dynamically load dialogs from external datasource
-// create a GraphDialog for each and bind it to the intents object
-loadDialogs()
-  .then(dialogs => {
-    for (var i=0; i<dialogs.length; i++) {
-  
-      ((dialog) => {
-        console.log(`loading scenario: ${dialog.scenario} for regex: ${dialog.regex}`);
-       
-        var re = new RegExp(dialog.regex, 'i');
-        intents.matches(re, [
-          function (session) {
-            session.beginDialog(dialog.path, {});
-          }
-        ]);
 
-        GraphDialog
-          .fromScenario({ 
-            bot,
-            scenario: dialog.scenario, 
-            loadScenario, 
-            loadHandler,
-            customTypeHandlers: getCustomTypeHandlers()
-          })
-          .then(graphDialog => {
-            bot.dialog(dialog.path, graphDialog.getDialog());
-            console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} for regExp: ${dialog.regex}`);
-          })
-          .catch(err => { console.error(`error loading dialog: ${err.message}`); });
-      })(dialogs[i]);
-    }
+GraphDialog
+  .fromScenario({ 
+    bot,
+    scenario: 'router', 
+    loadScenario, 
+    loadHandler,
+    customTypeHandlers: getCustomTypeHandlers()
   })
-  .catch(err => console.error(`error loading dialogs dynamically: ${err.message}`));
+  .then(graphDialog => intents.onDefault(graphDialog.getDialog()))
+  .catch(err => console.error(`error loading dialog: ${err.message}`));
+
 
 // this allows you to extend the json with more custom node types, 
 // by providing your implementation to processing each custom type.
@@ -135,30 +114,6 @@ function loadHandler(handler) {
   });
 }
 
-// this is the handler for loading scenarios from external datasource
-// in this implementation we're just reading it from the file scnearios/dialogs.json
-// but it can come from any external datasource like a file, db, etc.
-function loadDialogs() {
-  return new Promise((resolve, reject) => {
-    console.log('loading dialogs');
-
-    var dialogsPath = path.join(scenariosPath, "dialogs.json");
-    return fs.readFile(dialogsPath, 'utf8', (err, content) => {
-      if (err) {
-        console.error("error loading json: " + dialogsPath);
-        return reject(err);
-      }
-
-      var dialogs = JSON.parse(content);
-
-      // simulating long load period
-      setTimeout(() => {
-        console.log('resolving dialogs', dialogsPath);
-        resolve(dialogs.dialogs);
-      }, Math.random() * 3000);
-    });  
-  });
-}
 
 app.post('/api/messages', connector.listen());
 
