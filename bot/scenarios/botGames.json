@@ -23,7 +23,7 @@
               "data": { 
                 "name": "set_alarm.js", 
                 "js": [
-                "module.exports = function (session, next, data) {                          ",
+                "module.exports = (session, next, data) => {                          ",
                 "   var intent = session.dialogData.data[data.source];              ",
                 "   var alarmTime = null;                                                   ",
                 "   if (intent.actions[0].parameters[0].name == \"time\") {                 ",
@@ -36,7 +36,7 @@
                 "     session.dialogData.data[data.target] = alarmTime;                          ",
                 "   }                                                                       ",
                 "   session.send('Alarm set for ' + alarmTime);                             ",
-                "   next();                                                                 ",
+                "   return next();                                                                 ",
                 "}                                                                          "
                 ],
                 "js_canBeEitherAStringOrAnArrayAsAbove": "module.exports = function (session, next, data) {}",

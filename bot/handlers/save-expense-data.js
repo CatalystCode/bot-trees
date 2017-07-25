@@ -1,6 +1,6 @@
 
-module.exports = function (session, next) {
+module.exports = (session, next) => {
   session.dialogData.data.expense = {};
   session.send("expense data saved...");
-  next();
+  return next();
 }

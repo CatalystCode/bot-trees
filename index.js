@@ -1,11 +1,11 @@
 var path = require('path');
+var util = require('util');
 var express = require('express');
 var builder = require('botbuilder');
-var BotGraphDialog = require('bot-graph-dialog');
+var GraphDialog = require('bot-graph-dialog');
 var config = require('./config');
 var fs = require('fs');
 
-var GraphDialog = BotGraphDialog.GraphDialog;
 var port = process.env.PORT || 3978;
 var app = express();
 
@@ -26,44 +26,47 @@ var handlersPath = path.join(__dirname, 'bot', 'handlers');
 bot.dialog('/', intents);
 
 intents.matches(/^(help|hi|hello)/i, [
-  function (session) {
+  session => {
     session.send('Hi, how can I help you?');
   }
 ]);
 
 // dynamically load dialogs from external datasource
 // create a GraphDialog for each and bind it to the intents object
-loadDialogs()
-  .then(dialogs => {
-    for (var i=0; i<dialogs.length; i++) {
-  
-      ((dialog) => {
-        console.log(`loading scenario: ${dialog.scenario} for regex: ${dialog.regex}`);
-       
-        var re = new RegExp(dialog.regex, 'i');
-        intents.matches(re, [
-          function (session) {
-            session.beginDialog(dialog.path, {});
-          }
-        ]);
+process.nextTick(async () => {
 
-        GraphDialog
-          .fromScenario({ 
-            bot,
-            scenario: dialog.scenario, 
-            loadScenario, 
-            loadHandler,
-            customTypeHandlers: getCustomTypeHandlers()
-          })
-          .then(graphDialog => {
-            bot.dialog(dialog.path, graphDialog.getDialog());
-            console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} for regExp: ${dialog.regex}`);
-          })
-          .catch(err => { console.error(`error loading dialog: ${err.message}`); });
-      })(dialogs[i]);
+  var dialogs = await loadDialogs();
+
+  dialogs.forEach(async dialog => {
+    console.log(`loading scenario: ${dialog.scenario} for regex: ${dialog.regex}`);
+    
+    var re = new RegExp(dialog.regex, 'i');
+    intents.matches(re, [
+      function (session) {
+        session.beginDialog(dialog.path, {});
+      }
+    ]);
+
+    try {
+      var graphDialog = await GraphDialog.fromScenario({ 
+        bot,
+        scenario: dialog.scenario, 
+        loadScenario, 
+        loadHandler,
+        customTypeHandlers: getCustomTypeHandlers()
+      });
     }
-  })
-  .catch(err => console.error(`error loading dialogs dynamically: ${err.message}`));
+    catch(err) {
+      console.error(`error loading dialog: ${err.message}`);
+    }
+      
+    bot.dialog(dialog.path, graphDialog.getDialog());
+    
+    console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} for regExp: ${dialog.regex}`);
+
+  });
+});
+
 
 // this allows you to extend the json with more custom node types, 
 // by providing your implementation to processing each custom type.
@@ -162,7 +165,6 @@ function loadDialogs() {
 
 app.post('/api/messages', connector.listen());
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log('listening on port %s', port);
 });
-

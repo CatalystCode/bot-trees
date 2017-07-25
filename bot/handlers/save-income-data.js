@@ -1,5 +1,5 @@
 
-module.exports = function (session, next) {
+module.exports = (session, next) => {
   session.send("income data saved...");
-  next();
+  return next();
 }

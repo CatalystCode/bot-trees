@@ -1,11 +1,10 @@
 var path = require('path');
 var express = require('express');
 var builder = require('botbuilder');
-var BotGraphDialog = require('bot-graph-dialog');
+var GraphDialog = require('bot-graph-dialog');
 var config = require('./config');
 var fs = require('fs');
 
-var GraphDialog = BotGraphDialog.GraphDialog;
 var port = process.env.PORT || 3978;
 var app = express();
 
@@ -35,49 +34,47 @@ intents.matches(/^(help|hi|hello)/i, [
 
 // dynamically load dialog from a remote datasource 
 // create a GraphDialog instance and bind it on the bot 
-function loadDialog(dialog) {
-  return new Promise((resolve, reject) => {
-    console.log(`loading scenario: ${dialog.scenario} for regex: ${dialog.regex}`);
-        
-    var re = new RegExp(dialog.regex, 'i');
 
-    intents.matches(re, [
-      function (session) {
-        session.beginDialog(dialog.path);
-      }
-    ]);
+async function loadDialog(dialog) {
 
-    GraphDialog
-      .fromScenario({ 
-        bot,
-        scenario: dialog.scenario, 
-        loadScenario, 
-        loadHandler,
-        customTypeHandlers: getCustomTypeHandlers(),
-        onBeforeProcessingStep
-      })
-      .then(graphDialog => {
-        
-        dialog.graphDialog = graphDialog;
-        dialogsMapById[graphDialog.getDialogId()] = dialog;
-        dialogsMapByPath[dialog.path] = dialog;
+  console.log(`loading scenario: ${dialog.scenario} for regex: ${dialog.regex}`);
+      
+  var re = new RegExp(dialog.regex, 'i');
 
-        bot.dialog(dialog.path, graphDialog.getDialog());
-        console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} version ${graphDialog.getDialogVersion()} for regExp: ${dialog.regex} on path ${dialog.path}`);
-        return resolve();
-      })
-      .catch(err => {
-        console.error(`error loading dialog: ${err.message}`);
-        return reject(err);
-      });
-  });
+  intents.matches(re, [
+    function (session) {
+      session.beginDialog(dialog.path);
+    }
+  ]);
+
+  try {
+    var graphDialog = await GraphDialog.fromScenario({ 
+      bot,
+      scenario: dialog.scenario, 
+      loadScenario, 
+      loadHandler,
+      customTypeHandlers: getCustomTypeHandlers(),
+      onBeforeProcessingStep
+    });
+  }
+  catch(err) {
+    console.error(`error loading dialog: ${err.message}`);
+    throw err;
+  }
+      
+  dialog.graphDialog = graphDialog;
+  dialogsMapById[graphDialog.getDialogId()] = dialog;
+  dialogsMapByPath[dialog.path] = dialog;
+
+  bot.dialog(dialog.path, graphDialog.getDialog());
+  console.log(`graph dialog loaded successfully: scenario ${dialog.scenario} version ${graphDialog.getDialogVersion()} for regExp: ${dialog.regex} on path ${dialog.path}`);
+
 }
 
-// trigger dynamica load of the dialogs
+// trigger dynamic load of the dialogs
 loadDialogs()
   .then(dialogs => dialogs.forEach(dialog => loadDialog(dialog)))
   .catch(err => console.error(`error loading dialogs dynamically: ${err.message}`));
-
 
 // intercept change in scenario version before processing each dialog step
 // if there was a change in the version, restart the dialog
@@ -198,21 +195,24 @@ function loadDialogs() {
 app.post('/api/messages', connector.listen());
 
 // endpoint for reloading scenario on demand
-app.get('/api/load/:scenario', (req, res) => {
+app.get('/api/load/:scenario', async (req, res) => {
   var scenario = req.params.scenario;
   console.log(`reloading scenario: ${scenario}`);
   var dialog = dialogsMapById[scenario];
   
-  return dialog.graphDialog.reload().then(()=>{
+  try {
+    await dialog.graphDialog.reload();
     var msg = `scenario id '${scenario}' reloaded`;
     console.log(msg);
     return res.end(msg);
-  })
-  .catch(err => res.end(`error loading dialog: ${err.message}`));
+  }
+  catch(err) {
+    return res.end(`error loading dialog: ${err.message}`)
+  }
 
 });
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log('listening on port %s', port);
 });
 
