@@ -48,7 +48,7 @@ process.nextTick(async () => {
     ]);
 
     try {
-      var graphDialog = await GraphDialog.fromScenario({ 
+      var graphDialog = await GraphDialog.create({ 
         bot,
         scenario: dialog.scenario, 
         loadScenario, 

@@ -1,4 +1,5 @@
 var path = require('path');
+var util = require('util');
 var express = require('express');
 var builder = require('botbuilder');
 var GraphDialog = require('bot-graph-dialog');
@@ -22,29 +23,68 @@ var intents = new builder.IntentDialog();
 var scenariosPath = path.join(__dirname, 'bot', 'scenarios');
 var handlersPath = path.join(__dirname, 'bot', 'handlers');
 
-bot.dialog('/', intents);
 
-intents.matches(/^(help|hi|hello)/i, [
-  function (session) {
-    session.send('Hi, how can I help you?');
+class ProxyNavigator {
+
+  constructor() {
+
+    this.nodes = {
+      "age": {
+          "id": "age",
+          "type": "prompt",
+          "data": { "type": "number", "text": "How old are you?" }
+        },
+      "whenStart": {
+          "id": "whenStart",
+          "type": "prompt",
+          "data": { "type": "time", "text": "When did it start?" }
+        }
+    };
+    this.nodesByIndex = Object.keys(this.nodes);
+    this.index = 0;
   }
-]);
+
+  // returns the current node of the dialog
+  async getCurrentNode(session) {
+    console.log('getCurrentNode');
+    
+    this.currNodeId = session.privateConversationData._currentNodeId;
+    var currNodeJson;
+
+    if (!this.currNodeId || !this.nodes[this.currNodeId]) {
+      this.index = 0;
+      currNodeJson = this.nodes[this.nodesByIndex[this.index]];
+    }
+
+    if (!currNodeJson)
+      currNodeJson = this.nodes[this.currNodeId];
+
+    return currNodeJson;
+  };
+
+  // resolves the next node in the dialog
+  async getNextNode(session) {
+    console.log('getNextNode called');
+    //console.log(`result from previous call: ${session.dialogData.data[varname]}`);
+    console.log(`result message to send to backend: ${util.inspect(session.message)}`);
+
+    this.index++;
+    if (this.index > this.nodesByIndex.length -1) {
+      this.index = 0;
+    }
+
+    var nextNodeJson = this.nodes[this.nodesByIndex[this.index]];
+    session.privateConversationData._currentNodeId = nextNodeJson.id;
+
+    return nextNodeJson;
+  };
+}
 
 process.nextTick(async () => {
-  try {
-    var graphDialog = await GraphDialog.create({ 
-      bot,
-      scenario: 'router', 
-      loadScenario, 
-      loadHandler,
-      customTypeHandlers: getCustomTypeHandlers()
-    });
-
-    intents.onDefault(graphDialog.getDialog());
-  }
-  catch(err) {
-    console.error(`error loading dialog: ${err.message}`)
-  }
+  var navigator = new ProxyNavigator();
+  var graphDialog = await GraphDialog.create({ bot, navigator });
+  bot.dialog('/', graphDialog.getDialog());
+  console.log(`proxy graph dialog loaded successfully`);
 });
 
 // this allows you to extend the json with more custom node types, 
@@ -117,6 +157,30 @@ function loadHandler(handler) {
   });
 }
 
+// this is the handler for loading scenarios from external datasource
+// in this implementation we're just reading it from the file scnearios/dialogs.json
+// but it can come from any external datasource like a file, db, etc.
+function loadDialogs() {
+  return new Promise((resolve, reject) => {
+    console.log('loading dialogs');
+
+    var dialogsPath = path.join(scenariosPath, "dialogs.json");
+    return fs.readFile(dialogsPath, 'utf8', (err, content) => {
+      if (err) {
+        console.error("error loading json: " + dialogsPath);
+        return reject(err);
+      }
+
+      var dialogs = JSON.parse(content);
+
+      // simulating long load period
+      setTimeout(() => {
+        console.log('resolving dialogs', dialogsPath);
+        resolve(dialogs.dialogs);
+      }, Math.random() * 3000);
+    });  
+  });
+}
 
 app.post('/api/messages', connector.listen());
 
