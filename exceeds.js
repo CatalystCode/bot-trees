@@ -25,7 +25,6 @@ var bot = new builder.UniversalBot(connector);
 class ProxyNavigator {
 
   constructor() {
-
     // backend root URL
     this.apiUrl = "http://be1f4b76.ngrok.io/api/msBotFramework";
   }
@@ -55,9 +54,20 @@ class ProxyNavigator {
   async getNextNode(session) {
     console.log(`getNextNode, message: ${JSON.stringify(session.message, true, 2)}`);
 
+    var body = { 
+      message: session.message
+    };
+
+    // add the resolved value from the bot-graph-dialog.
+    // in case of a 'time' prompt- "2 days ago" will be resolved to the
+    // actual date 2 days ago
+    if (session.privateConversationData._lastResolvedResult) {
+      body.resolved = session.privateConversationData._lastResolvedResult;
+    }
+
     var node = await this.callApi({
       uri: this.apiUrl + '/message',
-      body: { message: session.message },
+      body,
       method: 'POST',
       json: true
     });
