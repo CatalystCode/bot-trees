@@ -46,7 +46,7 @@ class ProxyNavigator {
 
   // returns the current node of the dialog
   async getCurrentNode(session) {
-    console.log('getCurrentNode');
+    console.log(`getCurrentNode, message: ${JSON.stringify(session.message, true, 2)}`);
     
     this.currNodeId = session.privateConversationData._currentNodeId;
     var currNodeJson;
@@ -64,9 +64,8 @@ class ProxyNavigator {
 
   // resolves the next node in the dialog
   async getNextNode(session) {
-    console.log('getNextNode called');
+    console.log(`getNextNode, message: ${util.inspect(session.message)}`);
     //console.log(`result from previous call: ${session.dialogData.data[varname]}`);
-    console.log(`result message to send to backend: ${util.inspect(session.message)}`);
 
     this.index++;
     if (this.index > this.nodesByIndex.length -1) {
