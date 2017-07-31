@@ -26,7 +26,7 @@ class ProxyNavigator {
 
   constructor() {
     // backend root URL
-    this.apiUrl = "http://be1f4b76.ngrok.io/api/msBotFramework";
+    this.apiUrl = "http://86d54bb8.ngrok.io/api/msBotFramework";
   }
 
   // returns the current node of the dialog
@@ -47,6 +47,12 @@ class ProxyNavigator {
       node = await this.getNextNode(session);
     }
 
+    // in case of a node with a few steps (internal nodes)
+    var internalIndex = session.privateConversationData._currInternalIndex;
+    if (node && node.steps && !isNaN(internalIndex)) {
+      node = node.steps[internalIndex];
+    }
+
     return node;
   };
 
@@ -54,6 +60,32 @@ class ProxyNavigator {
   async getNextNode(session) {
     console.log(`getNextNode, message: ${JSON.stringify(session.message, true, 2)}`);
 
+    var node;
+    if (session.privateConversationData._currentNode) {
+      try {
+        node = JSON.parse(session.privateConversationData._currentNode);
+      }
+      catch(err) {
+        console.error(`error parsing current node json: ${session.privateConversationData._currentNode}`);
+      }
+    }
+
+    if (node && node.steps) {
+      var internalIndex = session.privateConversationData._currInternalIndex;
+      internalIndex = isNaN(internalIndex) ? 0 : internalIndex + 1;
+      if (internalIndex > node.steps.length - 1) {
+        // get next node from remote api
+        return await this.resolveNextRemoteNode(session);
+      }
+
+      session.privateConversationData._currInternalIndex = internalIndex;
+      return node.steps[internalIndex];
+    }
+
+    return await this.resolveNextRemoteNode(session);
+  };
+
+  async resolveNextRemoteNode(session) {
     var body = { 
       message: session.message
     };
@@ -71,10 +103,24 @@ class ProxyNavigator {
       method: 'POST',
       json: true
     });
-    
+
+    delete session.privateConversationData._currInternalIndex;
+
+    if (!node.steps) {
+      node = {
+        type: 'sequence',
+        steps: [ node ]
+      }
+    }
+
+    node.steps[node.steps.length - 1].stop = true;
+
+    session.privateConversationData._currInternalIndex = 0;
     session.privateConversationData._currentNode = node ? JSON.stringify(node) : null;
+
+    node = node.steps[0];
     return node;
-  };
+  }
 
   // calls the remote API
   async callApi(opts) {
@@ -95,7 +141,7 @@ class ProxyNavigator {
 
 process.nextTick(async () => {
   var navigator = new ProxyNavigator();
-  var graphDialog = await GraphDialog.create({ bot, navigator });
+  var graphDialog = await GraphDialog.create({ bot, navigator, proxyMode: true });
   bot.dialog('/', graphDialog.getDialog());
   console.log(`proxy graph dialog loaded successfully`);
 });
