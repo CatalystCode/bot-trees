@@ -1,11 +1,10 @@
 var path = require('path');
 var express = require('express');
 var builder = require('botbuilder');
-var BotGraphDialog = require('bot-graph-dialog');
+var GraphDialog = require('bot-graph-dialog');
 var config = require('./config');
 var fs = require('fs');
 
-var GraphDialog = BotGraphDialog.GraphDialog;
 var port = process.env.PORT || 3978;
 var app = express();
 
@@ -31,18 +30,22 @@ intents.matches(/^(help|hi|hello)/i, [
   }
 ]);
 
+process.nextTick(async () => {
+  try {
+    var graphDialog = await GraphDialog.create({ 
+      bot,
+      scenario: 'router', 
+      loadScenario, 
+      loadHandler,
+      customTypeHandlers: getCustomTypeHandlers()
+    });
 
-GraphDialog
-  .fromScenario({ 
-    bot,
-    scenario: 'router', 
-    loadScenario, 
-    loadHandler,
-    customTypeHandlers: getCustomTypeHandlers()
-  })
-  .then(graphDialog => intents.onDefault(graphDialog.getDialog()))
-  .catch(err => console.error(`error loading dialog: ${err.message}`));
-
+    intents.onDefault(graphDialog.getDialog());
+  }
+  catch(err) {
+    console.error(`error loading dialog: ${err.message}`)
+  }
+});
 
 // this allows you to extend the json with more custom node types, 
 // by providing your implementation to processing each custom type.
@@ -117,7 +120,6 @@ function loadHandler(handler) {
 
 app.post('/api/messages', connector.listen());
 
-app.listen(port, function () {
+app.listen(port, () => {
   console.log('listening on port %s', port);
 });
-

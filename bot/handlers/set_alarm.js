@@ -1,5 +1,5 @@
 
-module.exports = function (session, next, data) {
+module.exports = (session, next, data) => {
 
   var intent = session.dialogData.data[data.source];
   var alarmTime = null;
@@ -16,5 +16,5 @@ module.exports = function (session, next, data) {
   }
 
   session.send('Alarm set for ' + alarmTime);
-  next();
+  return next();
 }

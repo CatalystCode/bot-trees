@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/CatalystCode/bot-trees#readme",
   "dependencies": {
-    "bot-graph-dialog": "3.4.5",
-    "botbuilder": "3.4.4",
+    "bot-graph-dialog": "^3.8.4",
+    "botbuilder": "^3.8.4",
     "express": "^4.14.0",
     "extend": "^3.0.0",
     "jsep": "^0.3.0",
@@ -32,4 +32,3 @@
     "uuid": "^3.0.0"
   }
 }
-
